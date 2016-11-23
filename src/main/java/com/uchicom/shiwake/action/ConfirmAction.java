@@ -3,10 +3,12 @@ package com.uchicom.shiwake.action;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JTable;
+
 import com.uchicom.shiwake.window.ShiwakeFrame;
 import com.uchicom.ui.action.AbstractResourceAction;
 
-public abstract class ConfirmAction extends AbstractResourceAction {
+public abstract class ConfirmAction extends AbstractResourceAction<JTable> {
 
 
 	protected ShiwakeFrame shiwakeFrame;

@@ -3,6 +3,8 @@ package com.uchicom.shiwake.action.edit;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JTable;
+
 import com.uchicom.shiwake.window.AccountListBook;
 import com.uchicom.shiwake.window.ShiwakeFrame;
 import com.uchicom.ui.action.AbstractResourceAction;
@@ -11,7 +13,7 @@ import com.uchicom.ui.action.AbstractResourceAction;
  * @author uchicom: Shigeki Uchiyama
  *
  */
-public class AccountAddAction extends AbstractResourceAction {
+public class AccountAddAction extends AbstractResourceAction<JTable> {
 
     private AccountListBook accountListBook;
 

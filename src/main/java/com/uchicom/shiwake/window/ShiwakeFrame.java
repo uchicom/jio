@@ -1,7 +1,6 @@
 // (c) 2012 uchicom
 package com.uchicom.shiwake.window;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -90,7 +89,7 @@ import com.uchicom.ui.util.UIStore;
  * @author Uchiyama Shigeki
  *
  */
-public class ShiwakeFrame extends JFrame implements UIStore {
+public class ShiwakeFrame extends JFrame implements UIStore<JTable> {
 
 	/**
 	 * シリアルバージョン(現状使う想定なし)
@@ -1046,7 +1045,7 @@ public class ShiwakeFrame extends JFrame implements UIStore {
 
 
 	@Override
-	public Component getMainComponent() {
+	public JTable getMainComponent() {
 		return table;
 	}
 
