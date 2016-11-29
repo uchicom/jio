@@ -3,6 +3,8 @@ package com.uchicom.shiwake.action.edit;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JOptionPane;
+
 import com.uchicom.shiwake.action.ConfirmAction;
 import com.uchicom.shiwake.table.ListTableModel;
 import com.uchicom.shiwake.window.ShiwakeFrame;
@@ -29,11 +31,13 @@ public class DeleteAction extends ConfirmAction {
 	 */
 	@Override
 	public void action(ActionEvent e) {
-		ListTableModel model = shiwakeFrame.getModel();
-		int[] rowIndexs = shiwakeFrame.getSelectedRows();
-		if (rowIndexs.length != 0) {
-		    model.removeRows(rowIndexs);
-			shiwakeFrame.clearSelection();
+		if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(uiStore.getMainComponent(), uiStore.getResourceBundle().getString("message.delete"))) {
+			ListTableModel model = shiwakeFrame.getModel();
+			int[] rowIndexs = shiwakeFrame.getSelectedRows();
+			if (rowIndexs.length != 0) {
+			    model.removeRows(rowIndexs);
+				shiwakeFrame.clearSelection();
+			}
 		}
 	}
 

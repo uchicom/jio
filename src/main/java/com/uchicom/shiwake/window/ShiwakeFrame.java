@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -89,7 +90,7 @@ import com.uchicom.ui.util.UIStore;
  * @author Uchiyama Shigeki
  *
  */
-public class ShiwakeFrame extends JFrame implements UIStore<JTable> {
+public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 
 	/**
 	 * シリアルバージョン(現状使う想定なし)
@@ -172,6 +173,9 @@ public class ShiwakeFrame extends JFrame implements UIStore<JTable> {
 	private Properties prop = new Properties();
 
 	private Properties actionResource = new Properties();
+
+	private static final ResourceBundle resourceBundle = ResourceBundle
+			.getBundle("com.uchicom.shiwake.resource");
 
 	/** 勘定リスト */
 	Vector<Account> accountList = new Vector<>();
@@ -1045,8 +1049,8 @@ public class ShiwakeFrame extends JFrame implements UIStore<JTable> {
 
 
 	@Override
-	public JTable getMainComponent() {
-		return table;
+	public ShiwakeFrame getMainComponent() {
+		return this;
 	}
 
 	@Override
@@ -1068,5 +1072,13 @@ public class ShiwakeFrame extends JFrame implements UIStore<JTable> {
 		}
 		debitCellEditor.stopCellEditing();
 		creditCellEditor.stopCellEditing();
+	}
+
+	/* (非 Javadoc)
+	 * @see com.uchicom.ui.util.UIStore#getResourceBundle()
+	 */
+	@Override
+	public ResourceBundle getResourceBundle() {
+		return resourceBundle;
 	}
 }
