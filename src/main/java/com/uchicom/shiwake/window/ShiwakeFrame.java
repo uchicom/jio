@@ -82,6 +82,7 @@ import com.uchicom.shiwake.table.LongDocument;
 import com.uchicom.shiwake.table.TextAreaCellEditor;
 import com.uchicom.shiwake.table.TransactionTableCellEditor;
 import com.uchicom.shiwake.util.ZipCSVReader;
+import com.uchicom.ui.util.ImageUtil;
 import com.uchicom.ui.util.UIStore;
 
 /**
@@ -184,7 +185,7 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	private TableCellEditor debitCellEditor = new TransactionTableCellEditor(accountList, TransactionType.Debit, this);
 	/** 貸方 */
 	private TableCellEditor creditCellEditor = new TransactionTableCellEditor(accountList, TransactionType.Credit, this);
-	List<Journal> beanList = new ArrayList<Journal>();
+	List<Journal> journalList = new ArrayList<Journal>();
 	/**
 	 * テーブル
 	 */
@@ -710,8 +711,10 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	 * 表示を初期化する。
 	 */
 	private void initView() {
+		// アイコン
+		setIconImage(ImageUtil.getImageIcon("com/uchicom/shiwake/icon.png").getImage());
 		// テーブルモデル
-		model = new ListTableModel(beanList, 5);
+		model = new ListTableModel(journalList, 5);
 		// テーブル
 		table = new JTable(model, createTableColumnModel());
 		table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -804,7 +807,7 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	 * ファイルの形式csv
 	 */
 	public void openFile() {
-		beanList.clear();
+		journalList.clear();
 		accountList.clear();
 		if (selectedFile.exists() && selectedFile.isFile()) {
 			try (ZipCSVReader csvReader = new ZipCSVReader(selectedFile, "utf8")){
@@ -814,7 +817,7 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 				if (csvReader.hasNextEntry() && "journal.csv".equals(csvReader.getName())) {
 					while ((strings = csvReader.getNextCsvLine(4)) != null) {
 						Journal journal = Journal.create(strings);
-						beanList.add(journal);
+						journalList.add(journal);
 						journalMap.put(journal.getId(), journal);
 					}
 					csvReader.closeEntry();
@@ -906,23 +909,23 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 
 					ZipEntry ent = new ZipEntry("journal.csv");
 					zip.putNextEntry(ent);
-					for (Journal journal : beanList) {
-						zip.write(journal.toCsv().getBytes());
+					for (Journal journal : journalList) {
+						zip.write(journal.toCsv().getBytes("utf8"));
 						zip.write('\n');
 					}
 					zip.closeEntry();
 					ent = new ZipEntry("account.csv");
 					zip.putNextEntry(ent);
 					for (Account account : accountList) {
-						zip.write(account.toCsv().getBytes());
+						zip.write(account.toCsv().getBytes("utf8"));
 						zip.write('\n');
 					}
 					zip.closeEntry();
 					ent = new ZipEntry("transaction.csv");
 					zip.putNextEntry(ent);
-					for (Journal journal : beanList) {
+					for (Journal journal : journalList) {
 						for (Transaction transaction : journal.getTransactionList()) {
-							zip.write(transaction.toCsv().getBytes());
+							zip.write(transaction.toCsv().getBytes("utf8"));
 							zip.write('\n');
 						}
 					}
@@ -960,16 +963,16 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	AccountListBook accountListBook;
 
 	/** 損益計算書画面 */
-	ProfitBook profitBook = new ProfitBook(beanList);
+	ProfitBook profitBook = new ProfitBook(journalList);
 
 	/** 帳面マップ */
 	Map<String, AccountBook> bookMap = new HashMap<String, AccountBook>();
 
 	/** 月別売上金額 */
-	MonthlyBook salesMonthlyBook = new MonthlyBook(beanList);
+	MonthlyBook salesMonthlyBook = new MonthlyBook(journalList);
 
 	/** 貸借対照表 */
-	BalanceBook balanceBook = new BalanceBook(beanList);
+	BalanceBook balanceBook = new BalanceBook(journalList);
 	/**
 	 * 勘定一覧画面を初期化します.
 	 */
@@ -997,7 +1000,7 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 			accountBook = bookMap.get(key);
 		} else {
 			//新規作成
-			accountBook = new AccountBook(beanList);
+			accountBook = new AccountBook(journalList);
 			accountBook.pack();
 			setWindowSize(accountBook, PROP_KEY_CASHBOOK_WINDOW);
 			bookMap.put(key, accountBook);
@@ -1019,20 +1022,20 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	}
 
 	public void initBook() {
-		AccountBook accountBook = new AccountBook(beanList);
+		AccountBook accountBook = new AccountBook(journalList);
 		accountBook.pack();
 
 		setWindowSize(accountBook, PROP_KEY_CASHBOOK_WINDOW);
 		bookMap.put(PROP_KEY_CASHBOOK_WINDOW, accountBook);
-		AccountBook costbook = new AccountBook(beanList);
+		AccountBook costbook = new AccountBook(journalList);
 		costbook.pack();
 		setWindowSize(costbook, PROP_KEY_COST_WINDOW);
 		bookMap.put("消耗品費", costbook);
-		AccountBook accountsPayBook = new AccountBook(beanList);
+		AccountBook accountsPayBook = new AccountBook(journalList);
 		accountsPayBook.pack();
 		setWindowSize(accountsPayBook, PROP_KEY_ACCOUNT_PAY_WINDOW);
 		bookMap.put("売掛金", accountsPayBook);
-		AccountBook accountsRecBook = new AccountBook(beanList);
+		AccountBook accountsRecBook = new AccountBook(journalList);
 		accountsRecBook.pack();
 		setWindowSize(accountsRecBook, PROP_KEY_ACCOUNT_REC_WINDOW);
 		bookMap.put("買掛金", accountsRecBook);
@@ -1080,5 +1083,9 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	@Override
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
+	}
+
+	public List<Journal> getJournalList() {
+		return journalList;
 	}
 }

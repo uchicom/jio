@@ -2,9 +2,7 @@
 package com.uchicom.shiwake.bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 勘定に関する仕訳
@@ -38,16 +36,18 @@ public class SubJournal implements Serializable {
      */
     private Integer status;
 	/**
-	 * 取引
+	 * 勘定科目
 	 */
-	private List<Transaction> transactionList = new ArrayList<Transaction>();
-	public SubJournal(Date dealDay, String summary, Long amount, List<Transaction> transactionList) {
+	private Account account;
+	/** 残高 */
+	private Integer balance;
+	public SubJournal(Date dealDay, String summary, Long amount, Account account, Integer balance) {
 
 	    this.dealDay = dealDay;
 	    this.summary = summary;
 	    this.amount = amount;
-	    this.transactionList = transactionList;
-
+	    this.account = account;
+	    this.balance = balance;
 	}
 	public SubJournal() {
         dealDay = new Date(System.currentTimeMillis());
@@ -92,21 +92,22 @@ public class SubJournal implements Serializable {
 
 
 	/**
-	 * transactionListを取得します。
-	 * @return transactionList
+	 * accountを取得します。
+	 *
+	 * @return account
 	 */
-	public List<Transaction> getTransactionList() {
-		return transactionList;
+	public Account getAccount() {
+		return account;
 	}
 
 	/**
-	 * transactionListを設定します。
-	 * @param transactionList
+	 * accountを設定します。
+	 *
+	 * @param account
 	 */
-	public void setTransactionList(List<Transaction> transactionList) {
-		this.transactionList = transactionList;
+	public void setAccount(Account account) {
+		this.account = account;
 	}
-
 	/**
 	 * amountを取得します。
 	 *
@@ -139,6 +140,12 @@ public class SubJournal implements Serializable {
 	 */
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public Integer getBalance() {
+		return balance;
+	}
+	public void setBalance(Integer balance) {
+		this.balance = balance;
 	}
 
 

@@ -3,22 +3,16 @@ package com.uchicom.shiwake.action.file;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.InputStream;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintException;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.MediaSizeName;
-import javax.print.attribute.standard.Sides;
+import javax.swing.JOptionPane;
 
 import com.uchicom.shiwake.action.ConfirmAction;
+import com.uchicom.shiwake.util.JournalPrinter;
 import com.uchicom.shiwake.window.ShiwakeFrame;
 
 /**
@@ -47,24 +41,20 @@ public class PrintAction extends ConfirmAction {
 	 */
 	@Override
 	public void action(ActionEvent e) {
-		InputStream psStream = null;
-		DocFlavor psInFormat = DocFlavor.INPUT_STREAM.POSTSCRIPT;
-		Doc myDoc = new SimpleDoc(psStream, psInFormat, null);
-		PrintRequestAttributeSet aset =
-				new HashPrintRequestAttributeSet();
-		aset.add(new Copies(5));
-		aset.add(MediaSizeName.ISO_A4);
-		aset.add(Sides.DUPLEX);
-		PrintService[] services = PrintServiceLookup.lookupPrintServices(psInFormat,  aset);
-		if (services.length > 0) {
-			DocPrintJob job = services[0].createPrintJob();
-			try {
-				job.print(myDoc,  aset);
-			} catch (PrintException pe) {
-				pe.printStackTrace();
-			}
-		}
+		PrinterJob job = PrinterJob.getPrinterJob();
+		job.setPrintable(new JournalPrinter(shiwakeFrame.getJournalList()));
 
+		PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+		attributes.add(MediaSizeName.ISO_A4);
+		boolean doPrint = job.printDialog();
+		if (doPrint) {
+		    try {
+		        job.print();
+		        JOptionPane.showMessageDialog(shiwakeFrame, "印刷が完了しました。");
+		    } catch (PrinterException pe) {
+		    	JOptionPane.showMessageDialog(shiwakeFrame, pe.getMessage());
+		    }
+		}
 
 	}
 

@@ -109,6 +109,7 @@ public class JournalTableCellRenderer extends DefaultTableCellRenderer {
 		columnModel.addColumn(tableColumn);
 		intable = new JTable(model, columnModel);
 		intable.setRequestFocusEnabled(false);
+		label.setFont(textArea.getFont());
     }
 
     @Override

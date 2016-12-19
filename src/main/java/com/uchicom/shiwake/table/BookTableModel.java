@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
 
+import com.uchicom.shiwake.bean.Account;
 import com.uchicom.shiwake.bean.Journal;
 import com.uchicom.shiwake.bean.SubJournal;
 import com.uchicom.shiwake.bean.Transaction;
@@ -28,20 +29,55 @@ public class BookTableModel extends DefaultTableModel {
 	public void setAccountName(String accountName) {
 		System.out.println("rowList" + rowList.size());
 		bookList.clear();
+		int balance = 0;
 		for (Journal journal : rowList) {
 			for (Transaction credit : journal.getCreditList()) {
 				if (credit.getAccount() != null && accountName.equals(credit.getAccount().getName())) {
 					if (journal.getCreditList().size() == 1) {
+						if (journal.getDebitList().size() == 1) {
+							balance -= journal.getAmount();
+							bookList.add(new SubJournal(journal.getDealDay(), journal.getSummary(),
+									-journal.getAmount(), journal.getDebitList().get(0).getAccount(), balance));
+						} else {
+							for (Transaction debit : journal.getDebitList()) {
+								balance -= debit.getAmount();
+								bookList.add(new SubJournal(journal.getDealDay(), journal.getSummary(),
+										-debit.getAmount(), debit.getAccount(), balance));
+							}
+						}
+					} else if (journal.getDebitList().size() == 1) {
+						balance -= credit.getAmount();
 						bookList.add(new SubJournal(journal.getDealDay(), journal.getSummary(),
-							journal.getAmount(), journal.getDebitList()));
+							-credit.getAmount(), journal.getDebitList().get(0).getAccount(), balance));
 					} else {
-
+						balance -= credit.getAmount();
+						bookList.add(new SubJournal(journal.getDealDay(), journal.getSummary(),
+								-credit.getAmount(), null, balance));
 					}
 				}
 			}
 			for (Transaction debit : journal.getDebitList()) {
 				if (debit.getAccount() != null && accountName.equals(debit.getAccount().getName())) {
-					//bookList.add(journal);
+					if (journal.getDebitList().size() == 1) {
+						if (journal.getCreditList().size() == 1) {
+							balance += journal.getAmount();
+							bookList.add(new SubJournal(journal.getDealDay(), journal.getSummary(),
+									journal.getAmount(), journal.getCreditList().get(0).getAccount(), balance));
+						} else {
+							for (Transaction credit : journal.getCreditList()) {
+								balance += journal.getAmount();
+								bookList.add(new SubJournal(journal.getDealDay(), journal.getSummary(), journal.getAmount(), credit.getAccount(), balance));
+							}
+						}
+					} else if (journal.getCreditList().size() == 1) {
+						balance += debit.getAmount();
+						bookList.add(new SubJournal(journal.getDealDay(), journal.getSummary(),
+							debit.getAmount(), journal.getCreditList().get(0).getAccount(), balance));
+					} else {
+						balance += debit.getAmount();
+						bookList.add(new SubJournal(journal.getDealDay(), journal.getSummary(),
+							debit.getAmount(), null, balance));
+					}
 				}
 			}
 		}
@@ -49,28 +85,38 @@ public class BookTableModel extends DefaultTableModel {
 	}
 
 	public Object getValueAt(int row, int col) {
-		Journal bean = rowList.get(row);
+		SubJournal bean = bookList.get(row);
 		String viewString = null;
 		switch (col) {
-		case 0:
+		case 0:	//日付
 			viewString = format.format(bean.getDealDay());
 			break;
-		case 1:
+		case 1:	//科目
+			Account account = bean.getAccount();
+			viewString = account == null ? "" : account.getName();
+			break;
+		case 2:	//摘要
 			viewString = bean.getSummary();
 			break;
-		case 2:
-			return bean.getDebitList();
 
-		case 3:
-			return bean.getCreditList();
-
-		case 4:
-			if (bean.getAmount() == null) {
-				viewString = "";
-			} else {
+		case 3:	//収入
+			if (bean.getAmount() != null && bean.getAmount() > 0) {
 				viewString = String.valueOf(bean.getAmount());
+			} else {
+				viewString = "";
 			}
 			break;
+		case 4:	//支出
+			if (bean.getAmount() != null && bean.getAmount() < 0) {
+				viewString = String.valueOf(-bean.getAmount());
+			} else {
+				viewString = "";
+			}
+			break;
+		case 5:	//差引残高
+			viewString = String.valueOf(bean.getBalance());
+			break;
+
 		default:
 			viewString = "";
 		}
