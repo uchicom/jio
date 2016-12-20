@@ -49,6 +49,7 @@ public class MonthlyTableModel extends DefaultTableModel {
 		int tmpYearMonth = -1;
 		String[] tmpRow = null;
 		Calendar calendar = Calendar.getInstance();
+		// TODO 仕入れと売上　、右側左側で+-が反転する
 		for (Journal journal : rowList) {
 			calendar.setTime(journal.getDealDay());
 			int yearMonth = calendar.get(Calendar.YEAR) * 100 + calendar.get(Calendar.MONTH);

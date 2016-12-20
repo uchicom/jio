@@ -35,7 +35,11 @@ public class ListTableModel extends DefaultTableModel {
 		String viewString = null;
 		switch (col) {
 		case 0:
-			viewString = format.format(bean.getDealDay());
+			if (bean.getDealDay() == null) {
+				viewString = "----/--/--";
+			} else {
+				viewString = format.format(bean.getDealDay());
+			}
 			break;
 		case 1:
 			viewString = bean.getSummary();

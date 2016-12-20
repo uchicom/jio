@@ -10,6 +10,12 @@ import java.net.URISyntaxException;
 import com.uchicom.shiwake.action.ConfirmAction;
 import com.uchicom.shiwake.window.ShiwakeFrame;
 
+/**
+ * オンラインヘルプ表示アクション.
+ *
+ * @author uchicom: Shigeki Uchiyama
+ *
+ */
 public class HelpAction extends ConfirmAction {
 
 	public HelpAction(ShiwakeFrame shiwakeFrame) {

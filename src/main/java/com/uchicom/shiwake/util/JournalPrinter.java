@@ -29,13 +29,18 @@ public class JournalPrinter implements Printable {
 		if (pageIndex > 0) {
 			return NO_SUCH_PAGE;
 		}
-
+		try {
 		Graphics2D g2d = (Graphics2D) graphics;
 		//g2d.translate(pf.getImageableX(), pf.getImageableY());
 		System.out.println("ix:iy " + pageFormat.getImageableX() + ":"
 				+ pageFormat.getImageableY());
+		System.out.println("iwidth:iheight " + pageFormat.getImageableWidth() + ":"
+				+ pageFormat.getImageableHeight());
 		g2d.drawString("仕訳帳", 100, 100);
 		g2d.setStroke(new BasicStroke(0.1f));
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 		return PAGE_EXISTS;
 	}
 

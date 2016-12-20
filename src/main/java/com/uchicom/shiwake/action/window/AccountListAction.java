@@ -7,6 +7,8 @@ import com.uchicom.shiwake.action.ConfirmAction;
 import com.uchicom.shiwake.window.ShiwakeFrame;
 
 /**
+ * 勘定科目一覧画面表示アクション.
+ *
  * @author uchicom: Shigeki Uchiyama
  *
  */

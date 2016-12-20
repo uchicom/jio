@@ -7,7 +7,7 @@ import com.uchicom.shiwake.action.ConfirmAction;
 import com.uchicom.shiwake.window.ShiwakeFrame;
 
 /**
- * 現金出納帳
+ * 現金出納帳画面表示アクション.
  *
  * @author Uchiyama Shigeki
  *

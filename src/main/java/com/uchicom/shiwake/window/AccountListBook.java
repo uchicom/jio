@@ -37,7 +37,7 @@ public class AccountListBook extends JFrame {
     private ShiwakeFrame shiwakeFrame;
 
     public AccountListBook(ShiwakeFrame shiwakeFrame) {
-        super("勘定科目一覧");
+        super(shiwakeFrame.getResourceBundle().getString("title.account_list"));
         this.shiwakeFrame = shiwakeFrame;
     }
 

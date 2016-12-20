@@ -70,6 +70,7 @@ import com.uchicom.shiwake.action.window.AccountsRecAction;
 import com.uchicom.shiwake.action.window.BalanceAction;
 import com.uchicom.shiwake.action.window.CashAction;
 import com.uchicom.shiwake.action.window.CostAction;
+import com.uchicom.shiwake.action.window.MonthlyPurchaseAction;
 import com.uchicom.shiwake.action.window.MonthlySalesAction;
 import com.uchicom.shiwake.action.window.ProfitAction;
 import com.uchicom.shiwake.bean.Account;
@@ -141,6 +142,10 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	 * 画面の初期位置保持キー
 	 */
 	public static final String PROP_KEY_MONTHLY_SALES_WINDOW = "monthlySalesWindow";
+	/**
+	 * 画面の初期位置保持キー
+	 */
+	public static final String PROP_KEY_MONTHLY_PURCHASE_WINDOW = "monthlyPurchaseWindow";
 	/**
 	 * 画面の初期位置保持キー
 	 */
@@ -334,10 +339,11 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 					setWindowProperty(ShiwakeFrame.this, PROP_KEY_JOURNAL_WINDOW);
 					setWindowProperty(accountListBook, PROP_KEY_ACCOUNT_WINDOW);
 					setWindowProperty(bookMap.get(PROP_KEY_CASHBOOK_WINDOW), PROP_KEY_CASHBOOK_WINDOW);
-					setWindowProperty(bookMap.get("買掛金"), PROP_KEY_ACCOUNT_REC_WINDOW);
-					setWindowProperty(bookMap.get("売掛金"), PROP_KEY_ACCOUNT_PAY_WINDOW);
-					setWindowProperty(bookMap.get("消耗品費"), PROP_KEY_COST_WINDOW);
-					setWindowProperty(salesMonthlyBook, PROP_KEY_MONTHLY_SALES_WINDOW);
+					setWindowProperty(bookMap.get(PROP_KEY_ACCOUNT_REC_WINDOW), PROP_KEY_ACCOUNT_REC_WINDOW);
+					setWindowProperty(bookMap.get(PROP_KEY_ACCOUNT_PAY_WINDOW), PROP_KEY_ACCOUNT_PAY_WINDOW);
+					setWindowProperty(bookMap.get(PROP_KEY_COST_WINDOW), PROP_KEY_COST_WINDOW);
+					setWindowProperty(monthlyBookMap.get(PROP_KEY_MONTHLY_SALES_WINDOW), PROP_KEY_MONTHLY_SALES_WINDOW);
+					setWindowProperty(monthlyBookMap.get(PROP_KEY_MONTHLY_PURCHASE_WINDOW), PROP_KEY_MONTHLY_PURCHASE_WINDOW);
 
 					// テーブルカラムの初期幅
 					String tableColumnWidth = table.getColumn(0).getWidth() + PROP_SPLIT_CHAR
@@ -500,6 +506,9 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 		menu.addSeparator();
 		menuItem = new JMenuItem(new MonthlySalesAction(this));
 		menu.add(menuItem);
+		menuItem = new JMenuItem(new MonthlyPurchaseAction(this));
+		menu.add(menuItem);
+		menu.addSeparator();
 		menuItem = new JMenuItem(new BalanceAction(this));
 		menu.add(menuItem);
 		menuItem = new JMenuItem(new ProfitAction(this));
@@ -966,10 +975,10 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	ProfitBook profitBook = new ProfitBook(journalList);
 
 	/** 帳面マップ */
-	Map<String, AccountBook> bookMap = new HashMap<String, AccountBook>();
+	Map<String, AccountBook> bookMap = new HashMap<>();
 
-	/** 月別売上金額 */
-	MonthlyBook salesMonthlyBook = new MonthlyBook(journalList);
+	/** 月別帳面マップ */
+	Map<String, MonthlyBook> monthlyBookMap = new HashMap<>();
 
 	/** 貸借対照表 */
 	BalanceBook balanceBook = new BalanceBook(journalList);
@@ -1002,7 +1011,7 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 			//新規作成
 			accountBook = new AccountBook(journalList);
 			accountBook.pack();
-			setWindowSize(accountBook, PROP_KEY_CASHBOOK_WINDOW);
+			setWindowSize(accountBook, key);
 			bookMap.put(key, accountBook);
 
 		}
@@ -1016,9 +1025,21 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	 * @param accountName
 	 * @param title
 	 */
-	public void showMonthlyBook(String accountName, String title) {
-		salesMonthlyBook.setAccountName(accountName, title);
-		salesMonthlyBook.setVisible(true);
+	public void showMonthlyBook(String key) {
+		MonthlyBook monthlyBook = null;
+		if (monthlyBookMap.containsKey(key)) {
+			//作成済み
+			monthlyBook = monthlyBookMap.get(key);
+		} else {
+			//新規作成
+			monthlyBook = new MonthlyBook(journalList);
+			monthlyBook.pack();
+			setWindowSize(monthlyBook, key);
+			monthlyBookMap.put(key, monthlyBook);
+
+		}
+		monthlyBook.setAccountName(prop.getProperty(key + ".ACCOUNT"), prop.getProperty(key + ".TITLE"));
+		monthlyBook.setVisible(true);
 	}
 
 	public void initBook() {
@@ -1030,18 +1051,25 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 		AccountBook costbook = new AccountBook(journalList);
 		costbook.pack();
 		setWindowSize(costbook, PROP_KEY_COST_WINDOW);
-		bookMap.put("消耗品費", costbook);
+		bookMap.put(PROP_KEY_COST_WINDOW, costbook);
 		AccountBook accountsPayBook = new AccountBook(journalList);
 		accountsPayBook.pack();
 		setWindowSize(accountsPayBook, PROP_KEY_ACCOUNT_PAY_WINDOW);
-		bookMap.put("売掛金", accountsPayBook);
+		bookMap.put(PROP_KEY_ACCOUNT_PAY_WINDOW, accountsPayBook);
 		AccountBook accountsRecBook = new AccountBook(journalList);
 		accountsRecBook.pack();
 		setWindowSize(accountsRecBook, PROP_KEY_ACCOUNT_REC_WINDOW);
-		bookMap.put("買掛金", accountsRecBook);
+		bookMap.put(PROP_KEY_ACCOUNT_REC_WINDOW, accountsRecBook);
 
+		MonthlyBook salesMonthlyBook = new MonthlyBook(journalList);
 		salesMonthlyBook.pack();
 		setWindowSize(salesMonthlyBook, PROP_KEY_MONTHLY_SALES_WINDOW);
+		monthlyBookMap.put(PROP_KEY_MONTHLY_SALES_WINDOW, salesMonthlyBook);
+
+		MonthlyBook purchaseMonthlyBook = new MonthlyBook(journalList);
+		purchaseMonthlyBook.pack();
+		setWindowSize(purchaseMonthlyBook, PROP_KEY_MONTHLY_PURCHASE_WINDOW);
+		monthlyBookMap.put(PROP_KEY_MONTHLY_PURCHASE_WINDOW, purchaseMonthlyBook);
 
 		balanceBook.pack();
 		setWindowSize(balanceBook, PROP_KEY_BALANCE_WINDOW);

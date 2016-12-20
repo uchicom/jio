@@ -7,7 +7,7 @@ import com.uchicom.shiwake.action.ConfirmAction;
 import com.uchicom.shiwake.window.ShiwakeFrame;
 
 /**
- * 売掛帳
+ * 売掛帳表示アクション.
  *
  * @author Uchiyama Shigeki
  *

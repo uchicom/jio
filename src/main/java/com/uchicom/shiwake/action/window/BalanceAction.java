@@ -6,6 +6,12 @@ import java.awt.event.ActionEvent;
 import com.uchicom.shiwake.action.ConfirmAction;
 import com.uchicom.shiwake.window.ShiwakeFrame;
 
+/**
+ * 貸借対照表画面表示アクション.
+ *
+ * @author uchicom: Shigeki Uchiyama
+ *
+ */
 public class BalanceAction extends ConfirmAction {
 	/**
 	 *
