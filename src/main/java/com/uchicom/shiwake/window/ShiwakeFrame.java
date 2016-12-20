@@ -344,6 +344,8 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 					setWindowProperty(bookMap.get(PROP_KEY_COST_WINDOW), PROP_KEY_COST_WINDOW);
 					setWindowProperty(monthlyBookMap.get(PROP_KEY_MONTHLY_SALES_WINDOW), PROP_KEY_MONTHLY_SALES_WINDOW);
 					setWindowProperty(monthlyBookMap.get(PROP_KEY_MONTHLY_PURCHASE_WINDOW), PROP_KEY_MONTHLY_PURCHASE_WINDOW);
+					setWindowProperty(balanceBook, PROP_KEY_BALANCE_WINDOW);
+					setWindowProperty(profitBook, PROP_KEY_PROFIT_WINDOW);
 
 					// テーブルカラムの初期幅
 					String tableColumnWidth = table.getColumn(0).getWidth() + PROP_SPLIT_CHAR
