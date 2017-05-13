@@ -107,7 +107,7 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	/**
 	 * 設定プロパティーファイルの相対パス
 	 */
-	private static final String CONF_FILE_PATH = "./conf/shiwake.properties";
+	private static final String CONF_FILE_PATH = "conf/shiwake.properties";
 
 	/**
 	 * 設定プロパティーファイルのコメント
@@ -217,7 +217,7 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	 */
 	public void initComponents() {
 		try {
-			actionResource.load(new FileInputStream("./conf/action.properties"));
+			actionResource.load(new FileInputStream("conf/shiwakeAction.properties"));
 		} catch (FileNotFoundException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();

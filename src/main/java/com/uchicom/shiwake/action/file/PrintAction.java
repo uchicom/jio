@@ -6,10 +6,12 @@ import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 
+import javax.print.PrintService;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.MediaSizeName;
-import javax.swing.JOptionPane;
+import javax.print.attribute.standard.Copies;
+import javax.print.attribute.standard.JobName;
+import javax.print.attribute.standard.OrientationRequested;
 
 import com.uchicom.shiwake.action.ConfirmAction;
 import com.uchicom.shiwake.util.JournalPrinter;
@@ -44,17 +46,36 @@ public class PrintAction extends ConfirmAction {
 		PrinterJob job = PrinterJob.getPrinterJob();
 		job.setPrintable(new JournalPrinter(shiwakeFrame.getJournalList()));
 
-		PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
-		attributes.add(MediaSizeName.ISO_A4);
-		boolean doPrint = job.printDialog();
-		if (doPrint) {
-		    try {
-		        job.print();
-		        JOptionPane.showMessageDialog(shiwakeFrame, "印刷が完了しました。");
-		    } catch (PrinterException pe) {
-		    	JOptionPane.showMessageDialog(shiwakeFrame, pe.getMessage());
-		    }
-		}
+
+        /* Construct the print request specification.
+        * The print data is a Printable object.
+        * the request additonally specifies a job name, 2 copies, and
+        * landscape orientation of the media.
+        */
+        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        aset.add(OrientationRequested.LANDSCAPE);
+        aset.add(new Copies(2));
+        aset.add(new JobName("My job", null));
+
+        /* Create a print job */
+        PrinterJob pj = PrinterJob.getPrinterJob();
+        pj.setPrintable(new JournalPrinter(shiwakeFrame.getJournalList()));
+        /* locate a print service that can handle the request */
+        PrintService[] services =
+                PrinterJob.lookupPrintServices();
+
+        if (services.length > 0) {
+                System.out.println("selected printer " + services[0].getName());
+                try {
+                        pj.setPrintService(services[0]);
+                        pj.pageDialog(aset);
+                        if(pj.printDialog(aset)) {
+                                pj.print(aset);
+                        }
+                } catch (PrinterException pe) {
+                        System.err.println(pe);
+                }
+        }
 
 	}
 

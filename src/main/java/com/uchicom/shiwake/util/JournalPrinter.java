@@ -26,7 +26,7 @@ public class JournalPrinter implements Printable {
 	@Override
 	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
 		System.out.println(pageIndex);
-		if (pageIndex > 0) {
+		if (pageIndex > 1) {
 			return NO_SUCH_PAGE;
 		}
 		try {
