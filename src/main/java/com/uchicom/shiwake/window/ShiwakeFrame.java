@@ -313,9 +313,6 @@ public class ShiwakeFrame extends JFrame implements UIStore<ShiwakeFrame> {
 	 * 画面の振る舞いを初期化する.
 	 */
 	private void initBehaviour() {
-		// 画面を閉じた際にプログラムを終了する。
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-
 		// WindowListnerを登録する
 		addWindowListener(new WindowListener() {
 
