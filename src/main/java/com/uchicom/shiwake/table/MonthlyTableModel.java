@@ -48,6 +48,7 @@ public class MonthlyTableModel extends DefaultTableModel {
 		});
 		int tmpYearMonth = -1;
 		String[] tmpRow = null;
+		int sum = 0;
 		Calendar calendar = Calendar.getInstance();
 		// TODO 仕入れと売上　、右側左側で+-が反転する
 		for (Journal journal : rowList) {
@@ -87,9 +88,11 @@ public class MonthlyTableModel extends DefaultTableModel {
 				}
 			}
 			tmpRow[1] = String.valueOf(Integer.parseInt(tmpRow[1]) - debitAmount + creditAmount);
-
-
+			sum += -debitAmount + creditAmount;
 		}
+		tmpRow = new String[]{"合計", String.valueOf(sum)};
+		monthlyList.add(tmpRow);
+
 		System.out.println("bookList:" + monthlyList.size());
 	}
 
