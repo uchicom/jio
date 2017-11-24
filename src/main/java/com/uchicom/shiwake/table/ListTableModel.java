@@ -24,6 +24,7 @@ public class ListTableModel extends DefaultTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private List<Journal> copyList = new ArrayList<>();
 	/** Creates a new instance of ListTableModel */
 	public ListTableModel(List<Journal> rowList, int columnCount) {
 		this.rowList = rowList;
@@ -180,14 +181,31 @@ public class ListTableModel extends DefaultTableModel {
 	 * @param aRow
 	 */
 	public void addRows(int[] aRow) {
-
 		for (int i = aRow.length - 1; i >= 0; i--) {
 			Journal bean = new Journal(TransactionType.Credit,TransactionType.Debit);
+			bean.setDealDay(rowList.get(aRow[0]).getDealDay());
 			rowList.add(aRow[i], bean);
 			addList.add(bean);
 			fireTableRowsInserted(aRow[i], aRow[i]);
 		}
 	}
+	
+	public void copy(int[] aRow) {
+		copyList.clear();
+		for (int row : aRow) {
+			copyList.add(rowList.get(row).clone());
+		}
+	}
+	public void insert(int[] aRow) {
+		long dealDayTime = rowList.get(aRow[0]).getDealDay().getTime();
+		copyList.forEach((journal)->{
+			journal.setDealDay(new Date(dealDayTime));
+		});
+		rowList.addAll(aRow[0], copyList);
+		copyList.clear();
+		fireTableRowsInserted(aRow[0], aRow[0] + copyList.size());
+	}
+
 
 	/**
 	 * 借方勘定項目追加

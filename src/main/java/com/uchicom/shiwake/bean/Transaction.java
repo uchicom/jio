@@ -14,17 +14,18 @@ import com.uchicom.shiwake.enums.TransactionType;
  * @author uchiyama
  *
  */
-public class Transaction implements Serializable {
+public class Transaction implements Serializable, Cloneable {
 
 	/**
      *
      */
 	private static final long serialVersionUID = 1L;
 
+    private static long maxId;
+    
 	/**  */
 	private Long id;
 
-    private static long maxId;
 	/** 仕訳ID */
 	private Long journalId;
 
@@ -221,6 +222,17 @@ public class Transaction implements Serializable {
 		} else {
 			return (account == null ? "" : account.getName()) + ":" + amount;
 		}
+	}
+	
+	@Override
+	public Transaction clone() {
+		Transaction transaction = new Transaction();
+		transaction.id = maxId++;
+		transaction.journalId = journalId;
+		transaction.account = account;
+		transaction.amount = amount;
+		transaction.type = type;
+		return transaction;
 	}
 
 }

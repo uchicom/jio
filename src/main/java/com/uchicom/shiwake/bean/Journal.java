@@ -13,13 +13,14 @@ import com.uchicom.shiwake.enums.TransactionType;
  * @author Uchiyama Shigeki
  *
  */
-public class Journal implements Serializable {
+public class Journal implements Serializable, Cloneable {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
+    /** これでマックスIDを制御 */
     private static long maxId;
 
     /** 仕訳ID */
@@ -200,6 +201,10 @@ public class Journal implements Serializable {
 		if (strings[3] != null && !"".equals(strings[3])) {
 			journal.setAmount(Long.parseLong(strings[3]));
 		}
+		//maxid制御 TODOs
+		if (maxId < journal.getId()) {
+			maxId = journal.getId() + 1;
+		}
 		return journal;
 	}
 	public String toCsv() {
@@ -238,5 +243,21 @@ public class Journal implements Serializable {
 		default:
 			break;
 		}
+	}
+	
+	@Override
+	public Journal clone() {
+		Journal journal = new Journal();
+		journal.dealDay = dealDay;
+		creditList.forEach((credit)-> {
+			journal.add(credit.clone());
+		});
+		debitList.forEach((credit)-> {
+			journal.add(credit.clone());
+		});
+		journal.status = status;
+		journal.summary = summary;
+		journal.amount = amount;
+		return journal;
 	}
 }
