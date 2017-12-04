@@ -85,6 +85,8 @@ public class ListTableModel extends DefaultTableModel {
 		case 4:
 			if (!"".equals((String)value)) {
 				bean.setAmount(Long.valueOf((String)value));
+			} else {
+				bean.setAmount(null);
 			}
 			break;
 		default:
