@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import com.uchicom.jio.action.ConfirmAction;
 import com.uchicom.jio.table.ListTableModel;
 import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.ui.util.DialogUtil;
 
 /**
  * 行を削除する
@@ -31,7 +32,7 @@ public class DeleteAction extends ConfirmAction {
 	 */
 	@Override
 	public void action(ActionEvent e) {
-		if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(uiStore.getMainComponent(), uiStore.getResourceBundle().getString("message.delete"))) {
+		if (JOptionPane.OK_OPTION == DialogUtil.showConfirmDialog(uiStore.getMainComponent(), uiStore.getResourceBundle().getString("message.delete"))) {
 			ListTableModel model = journalFrame.getModel();
 			int[] rowIndexs = journalFrame.getSelectedRows();
 			if (rowIndexs.length != 0) {

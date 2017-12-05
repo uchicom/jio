@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import com.uchicom.jio.action.ConfirmAction;
 import com.uchicom.jio.table.ListTableModel;
 import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.ui.util.DialogUtil;
 
 /**
  * 行を追加する
@@ -30,7 +31,7 @@ public class InsertAction extends ConfirmAction {
 	 */
 	@Override
 	public void action(ActionEvent arg0) {
-		if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(uiStore.getMainComponent(), uiStore.getResourceBundle().getString("message.add"))) {
+		if (JOptionPane.OK_OPTION == DialogUtil.showConfirmDialog(uiStore.getMainComponent(), uiStore.getResourceBundle().getString("message.add"))) {
 			ListTableModel model = journalFrame.getModel();
 			int[] rowIndexs = journalFrame.getSelectedRows();
 			if (rowIndexs.length == 0) {

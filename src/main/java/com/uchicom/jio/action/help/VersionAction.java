@@ -3,11 +3,10 @@ package com.uchicom.jio.action.help;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.JOptionPane;
-
 import com.uchicom.jio.Constants;
 import com.uchicom.jio.action.ConfirmAction;
 import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.ui.util.DialogUtil;
 
 /**
  * バージョン情報表示アクション.
@@ -29,7 +28,7 @@ public class VersionAction extends ConfirmAction {
 	 */
 	@Override
 	public void action(ActionEvent arg0) {
-		JOptionPane.showMessageDialog(uiStore.getMainComponent(), uiStore.getResourceBundle().getString("message.version") + Constants.VERSION);
+		DialogUtil.showMessageDialog(uiStore.getMainComponent(), uiStore.getResourceBundle().getString("message.version") + Constants.VERSION);
 	}
 
 }

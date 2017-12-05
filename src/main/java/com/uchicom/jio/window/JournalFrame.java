@@ -30,6 +30,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.swing.CellEditor;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -83,7 +84,7 @@ import com.uchicom.jio.table.LongDocument;
 import com.uchicom.jio.table.TextAreaCellEditor;
 import com.uchicom.jio.table.TransactionTableCellEditor;
 import com.uchicom.jio.util.ZipCSVReader;
-import com.uchicom.ui.util.ImageUtil;
+import com.uchicom.ui.util.DialogUtil;
 import com.uchicom.ui.util.UIStore;
 
 /**
@@ -720,7 +721,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 	 */
 	private void initView() {
 		// アイコン
-		setIconImage(ImageUtil.getImageIcon("com/uchicom/jio/icon.png").getImage());
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/uchicom/jio/icon.png")).getImage());
 		// テーブルモデル
 		model = new ListTableModel(journalList, 5);
 		// テーブル
@@ -793,7 +794,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		chooser.setSelectedFile(selectedFile);
 		switch (chooser.showOpenDialog(this)) {
 		case JFileChooser.CANCEL_OPTION:
-			// JOptionPane.showMessageDialog(this, "キャンセルしました。");
+			// DialogUtil.showMessageDialog(this, "キャンセルしました。");
 			break;
 		case JFileChooser.APPROVE_OPTION:
 			File file = chooser.getSelectedFile();
@@ -801,11 +802,11 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 				selectedFile = file;
 				openFile();
 			} else {
-				JOptionPane.showMessageDialog(this, "ファイルがありません。");
+				DialogUtil.showMessageDialog(this, "ファイルがありません。");
 			}
 			break;
 		case JFileChooser.ERROR_OPTION:
-			JOptionPane.showMessageDialog(this, "Errorが発生しました。");
+			DialogUtil.showMessageDialog(this, "Errorが発生しました。");
 			break;
 		default:
 		}
@@ -868,12 +869,12 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		JFileChooser chooser = new JFileChooser(selectedFile);
 		switch (chooser.showOpenDialog(this)) {
 		case JFileChooser.CANCEL_OPTION:
-			// JOptionPane.showMessageDialog(this, "キャンセルしました。");
+			// DialogUtil.showMessageDialog(this, "キャンセルしました。");
 			break;
 		case JFileChooser.APPROVE_OPTION:
 			File file = chooser.getSelectedFile();
 			if (file.exists()) {
-				switch (JOptionPane.showConfirmDialog(this, "ファイルが存在します。\n上書きしますか？", "上書き確認",
+				switch (DialogUtil.showConfirmDialog(this, "ファイルが存在します。\n上書きしますか？", "上書き確認",
 						JOptionPane.OK_CANCEL_OPTION)) {
 				case JOptionPane.OK_OPTION:
 					selectedFile = file;
@@ -895,7 +896,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 			}
 			break;
 		case JFileChooser.ERROR_OPTION:
-			JOptionPane.showMessageDialog(this, "Errorが発生しました。");
+			DialogUtil.showMessageDialog(this, "Errorが発生しました。");
 			break;
 		default:
 		}
