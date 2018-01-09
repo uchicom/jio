@@ -45,7 +45,7 @@ public class JournalTableCellRenderer extends DefaultTableCellRenderer {
     private JTable intable;
 
     /** 金額 */
-    private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();;
+    private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 //    private JScrollPane scrollPane = new JScrollPane(intable);
 
     public JournalTableCellRenderer() {
