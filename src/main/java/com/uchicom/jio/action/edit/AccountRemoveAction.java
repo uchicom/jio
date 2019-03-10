@@ -13,7 +13,11 @@ import com.uchicom.ui.action.AbstractResourceAction;
  */
 public class AccountRemoveAction extends AbstractResourceAction<JournalFrame> {
 
-    private AccountListBook accountListBook;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private AccountListBook accountListBook;
 
     public AccountRemoveAction(JournalFrame journalFrame, AccountListBook accountListBook) {
     	super(journalFrame);

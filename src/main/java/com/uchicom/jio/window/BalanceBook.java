@@ -14,14 +14,27 @@ import com.uchicom.jio.bean.Journal;
 import com.uchicom.jio.table.BalanceTableModel;
 import com.uchicom.jio.table.SelectCellEditor;
 
+/**
+ * 貸借対照表画面.
+ * 
+ * @author shige
+ *
+ */
 public class BalanceBook extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	BalanceTableModel balanceModel;
+
 	public BalanceBook(List<Journal> journalList) {
 		super("貸借対照表");
 		balanceModel = new BalanceTableModel(journalList);
 		initComponents();
 	}
-	//現金出納帳を表示する。
+
+	// 現金出納帳を表示する。
 	private void initComponents() {
 		DefaultTableColumnModel columnModel = new DefaultTableColumnModel();
 		TableColumn tableColumn = new TableColumn(0);
@@ -45,6 +58,7 @@ public class BalanceBook extends JFrame {
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		getContentPane().add(new JScrollPane(table));
 	}
+
 	@Override
 	public void setVisible(boolean visible) {
 		balanceModel.reflesh();

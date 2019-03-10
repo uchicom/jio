@@ -14,7 +14,18 @@ import com.uchicom.jio.bean.Journal;
 import com.uchicom.jio.table.MonthlyTableModel;
 import com.uchicom.jio.table.SelectCellEditor;
 
+/**
+ * 月別勘定一覧画面.
+ * 
+ * @author uchicom: Shigeki Uchiyama
+ *
+ */
 public class MonthlyBook extends JFrame {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	MonthlyTableModel monthlyModel;
 	public MonthlyBook(List<Journal> journalList) {
 		monthlyModel = new MonthlyTableModel(journalList);

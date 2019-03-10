@@ -12,6 +12,10 @@ import com.uchicom.jio.window.JournalFrame;
  */
 public class MonthlyPurchaseAction extends ConfirmAction {
 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * @param journalFrame
 	 */

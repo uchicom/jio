@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -15,6 +16,8 @@ import com.uchicom.jio.bean.Transaction;
 
 public class MonthlyTableModel extends DefaultTableModel {
 
+	private static final Logger logger = Logger.getLogger(MonthlyTableModel.class.getCanonicalName());
+	
 	List<String[]> monthlyList = new ArrayList<>();
 	public static final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM");
 	/**
@@ -28,7 +31,7 @@ public class MonthlyTableModel extends DefaultTableModel {
 	}
 
 	public void setAccountName(String accountName) {
-		System.out.println("rowList" + rowList.size());
+		logger.info("rowList" + rowList.size());
 		monthlyList.clear();
 		Collections.sort(rowList, new Comparator<Journal>() {
 
@@ -56,10 +59,10 @@ public class MonthlyTableModel extends DefaultTableModel {
 			int yearMonth = calendar.get(Calendar.YEAR) * 100 + calendar.get(Calendar.MONTH);
 			if (tmpYearMonth < 0 || tmpYearMonth != yearMonth) {
 //				if (tmpDate != null) {
-//				System.out.println("tmp:" + tmpDate.getTime() / (24 * 60 * 60 * 1000));
-//				System.out.println("journal:" + journal.getDealDay().getTime() / (24 * 60 * 60 * 1000));
-//				System.out.println("tmp:" + tmpDate);
-//				System.out.println("journal:" + journal.getDealDay());
+//				logger.info("tmp:" + tmpDate.getTime() / (24 * 60 * 60 * 1000));
+//				logger.info("journal:" + journal.getDealDay().getTime() / (24 * 60 * 60 * 1000));
+//				logger.info("tmp:" + tmpDate);
+//				logger.info("journal:" + journal.getDealDay());
 //				}
 				tmpYearMonth = yearMonth;
 				tmpRow = new String[]{format.format(journal.getDealDay()),
@@ -93,7 +96,7 @@ public class MonthlyTableModel extends DefaultTableModel {
 		tmpRow = new String[]{"合計", String.valueOf(sum)};
 		monthlyList.add(tmpRow);
 
-		System.out.println("bookList:" + monthlyList.size());
+		logger.info("bookList:" + monthlyList.size());
 	}
 
 	public Object getValueAt(int row, int col) {

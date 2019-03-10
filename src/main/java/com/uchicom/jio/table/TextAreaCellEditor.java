@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -21,6 +22,7 @@ import javax.swing.table.TableCellEditor;
  */
 public class TextAreaCellEditor implements TableCellEditor {
 
+	private static final Logger logger = Logger.getLogger(TextAreaCellEditor.class.getCanonicalName());
     private JTextArea textArea;
 
     private List<CellEditorListener> listenerList = new LinkedList<CellEditorListener>();
@@ -35,7 +37,7 @@ public class TextAreaCellEditor implements TableCellEditor {
     @Override
     public void addCellEditorListener(CellEditorListener arg0) {
         // TODO Auto-generated method stub
-        System.out.println("addCellEditorListener");
+        logger.info("addCellEditorListener");
         listenerList.add(arg0);
 
     }
@@ -46,7 +48,7 @@ public class TextAreaCellEditor implements TableCellEditor {
     @Override
     public void cancelCellEditing() {
         // TODO Auto-generated method stub
-        System.out.println("cancelCellEditing");
+        logger.info("cancelCellEditing");
         List<CellEditorListener> cancelList = new ArrayList<CellEditorListener>();
         cancelList.addAll(listenerList);
         for (CellEditorListener listener : cancelList) {
@@ -60,7 +62,7 @@ public class TextAreaCellEditor implements TableCellEditor {
      */
     @Override
     public Object getCellEditorValue() {
-        System.out.println("getCellEditorValue");
+        logger.info("getCellEditorValue");
 
 
         return textArea.getText();
@@ -71,7 +73,7 @@ public class TextAreaCellEditor implements TableCellEditor {
      */
     @Override
     public boolean isCellEditable(EventObject eventObject) {
-        System.out.println("isCellEditable" + eventObject);
+        logger.info("isCellEditable" + eventObject);
         if (eventObject instanceof MouseEvent) {
             MouseEvent mouseEvent = (MouseEvent) eventObject;
             keyEvent = null;
@@ -87,7 +89,7 @@ public class TextAreaCellEditor implements TableCellEditor {
      */
     @Override
     public void removeCellEditorListener(CellEditorListener arg0) {
-        System.out.println("removeCellEditorListener");
+        logger.info("removeCellEditorListener");
         listenerList.remove(arg0);
 
     }
@@ -97,7 +99,7 @@ public class TextAreaCellEditor implements TableCellEditor {
      */
     @Override
     public boolean shouldSelectCell(EventObject arg0) {
-        System.out.println("shouldSelectCell");
+        logger.info("shouldSelectCell");
 
         // TODO Auto-generated method stub
         return false;
@@ -108,7 +110,7 @@ public class TextAreaCellEditor implements TableCellEditor {
      */
     @Override
     public boolean stopCellEditing() {
-        System.out.println("stopCellEditing");
+        logger.info("stopCellEditing");
         List<CellEditorListener> stopList = new ArrayList<CellEditorListener>();
         stopList.addAll(listenerList);
         for (CellEditorListener listener : stopList) {
@@ -124,7 +126,7 @@ public class TextAreaCellEditor implements TableCellEditor {
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value,
             boolean isSelected, int row, int column) {
-        System.out.println("getTableCellEditorComponent");
+        logger.info("getTableCellEditorComponent");
         textArea.setText((String)value);
         return textArea;
     }

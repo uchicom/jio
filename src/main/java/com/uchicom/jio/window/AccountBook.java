@@ -15,13 +15,19 @@ import com.uchicom.jio.table.BookTableModel;
 import com.uchicom.jio.table.SelectCellEditor;
 
 /**
- * 現金出納帳
+ * 現金出納帳画面.
+ * 
  * @author uchiyamas
  *
  */
 public class AccountBook extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	BookTableModel bookModel;
+
 	public AccountBook(List<Journal> journalList) {
 		bookModel = new BookTableModel(journalList);
 		initComponents();
@@ -32,7 +38,8 @@ public class AccountBook extends JFrame {
 		bookModel.setAccountName(accountName);
 		bookModel.fireTableDataChanged();
 	}
-	//現金出納帳を表示する。
+
+	// 現金出納帳を表示する。
 	private void initComponents() {
 		DefaultTableColumnModel columnModel = new DefaultTableColumnModel();
 		TableColumn tableColumn = new TableColumn(0);

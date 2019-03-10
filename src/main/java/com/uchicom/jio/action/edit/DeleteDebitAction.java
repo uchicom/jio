@@ -8,6 +8,10 @@ import com.uchicom.jio.window.JournalFrame;
 
 public class DeleteDebitAction extends ConfirmAction {
 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public DeleteDebitAction(JournalFrame journalFrame) {
 		super(journalFrame);
 		// TODO 自動生成されたコンストラクター・スタブ

@@ -31,6 +31,8 @@ public class Account implements Serializable, Comparable<Account> {
 	private String category;
 	/** 貸借対照表並び順 */
 	private Long sortKey;
+	/** 割合 */
+	private int rate = 100;
 
 	public Account(Long id, String cd, String name, String category) {
 		this.id = id;
@@ -120,6 +122,12 @@ public class Account implements Serializable, Comparable<Account> {
 	}
 	public void setSortKey(Long sortKey) {
 		this.sortKey = sortKey;
+	}
+	public int getRate() {
+		return rate;
+	}
+	public void setRate(int rate) {
+		this.rate = rate;
 	}
 	/**
 	 * インサート処理

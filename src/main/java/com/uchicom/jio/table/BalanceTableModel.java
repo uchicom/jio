@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -23,19 +24,22 @@ public class BalanceTableModel extends DefaultTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private static final Logger logger = Logger.getLogger(BalanceTableModel.class.getCanonicalName());
+
 	/** Creates a new instance of ListTableModel */
 	public BalanceTableModel(List<Journal> rowList) {
 		this.rowList = rowList;
 	}
 
 	public void reflesh() {
-		System.out.println("rowList" + rowList.size());
+		logger.info("rowList" + rowList.size());
 		balanceList.clear();
 		Map<Account, Long> accountTotalMap = new HashMap<>();
 		for (Journal journal : rowList) {
-			//debit
+			// debit
 			for (Transaction debit : journal.getDebitList()) {
-				if (debit.getAccount() == null) continue;
+				if (debit.getAccount() == null)
+					continue;
 				Long total = 0L;
 				if (accountTotalMap.containsKey(debit.getAccount())) {
 					total = accountTotalMap.get(debit.getAccount());
@@ -48,7 +52,8 @@ public class BalanceTableModel extends DefaultTableModel {
 				accountTotalMap.put(debit.getAccount(), total);
 			}
 			for (Transaction credit : journal.getCreditList()) {
-				if (credit.getAccount() == null) continue;//TODO 本当は不明な勘定もひょうじしないとな
+				if (credit.getAccount() == null)
+					continue;// TODO 本当は不明な勘定もひょうじしないとな
 				Long total = 0L;
 				if (accountTotalMap.containsKey(credit.getAccount())) {
 					total = accountTotalMap.get(credit.getAccount());
@@ -64,6 +69,7 @@ public class BalanceTableModel extends DefaultTableModel {
 			}
 		}
 		for (Entry<Account, Long> entry : accountTotalMap.entrySet()) {
+			entry.setValue(entry.getValue() * entry.getKey().getRate() / 100);
 			balanceList.add(entry);
 		}
 		Collections.sort(balanceList, new Comparator<Entry<Account, Long>>() {
@@ -86,6 +92,10 @@ public class BalanceTableModel extends DefaultTableModel {
 
 		});
 
+	}
+
+	public long culc(Long amount, Account account) {
+		return amount * (account.getRate());
 	}
 
 	public Object getValueAt(int row, int col) {

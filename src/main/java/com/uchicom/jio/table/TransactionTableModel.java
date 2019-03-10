@@ -2,6 +2,7 @@
 package com.uchicom.jio.table;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -14,6 +15,7 @@ public class TransactionTableModel extends DefaultTableModel {
      *
      */
     private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(TransactionTableModel.class.getCanonicalName());
 
     /** データ格納リスト */
 	private List<Transaction> rowList;
@@ -61,12 +63,12 @@ public class TransactionTableModel extends DefaultTableModel {
 			value = "";
 				break;
 		}
-//		System.out.println("listValue:" + value);
+//		logger.info("listValue:" + value);
 		return value;
 	}
 
 	public void setValueAt(Object value, int row, int col) {
-	    System.out.println(value);
+	    logger.info(String.valueOf(value));
 		if (row < rowList.size()) {
 			Transaction bean = rowList.get(row);
 			if (value instanceof Account) {
@@ -90,12 +92,12 @@ public class TransactionTableModel extends DefaultTableModel {
                 }
 				break;
 			default:
-				System.out.println(col);
+				logger.info(String.valueOf(col));
 			}
 			}
 		} else {
 			//削除時の選択解除時にcancelcelleditingを実施したから問題ないはずだけど。。一応残しておくか。
-			System.out.println("row:" + row + ",col:" + col);
+			logger.info("row:" + row + ",col:" + col);
 		}
 	}
 

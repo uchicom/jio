@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.util.logging.Logger;
 
 import javax.print.PrintService;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -27,6 +28,9 @@ public class PrintAction extends ConfirmAction {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
+	
+
+	private static final Logger logger = Logger.getLogger(PrintAction.class.getCanonicalName());
 
 	public PrintAction(JournalFrame journalFrame) {
 		super(journalFrame);
@@ -65,7 +69,7 @@ public class PrintAction extends ConfirmAction {
                 PrinterJob.lookupPrintServices();
 
         if (services.length > 0) {
-                System.out.println("selected printer " + services[0].getName());
+                logger.info("selected printer " + services[0].getName());
                 try {
                         pj.setPrintService(services[0]);
                         pj.pageDialog(aset);

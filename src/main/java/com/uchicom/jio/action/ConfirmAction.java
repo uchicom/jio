@@ -9,6 +9,10 @@ import com.uchicom.ui.action.AbstractResourceAction;
 public abstract class ConfirmAction extends AbstractResourceAction<JournalFrame> {
 
 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected JournalFrame journalFrame;
 	public ConfirmAction(JournalFrame journalFrame) {
 		super(journalFrame);

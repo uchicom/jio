@@ -8,6 +8,10 @@ import com.uchicom.jio.window.JournalFrame;
 
 public class DeleteCreditAction extends ConfirmAction {
 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public DeleteCreditAction(JournalFrame journalFrame) {
 		super(journalFrame);
 		// TODO 自動生成されたコンストラクター・スタブ

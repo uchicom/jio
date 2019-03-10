@@ -18,7 +18,7 @@ public class SubJournal implements Serializable {
 
 
     /** 仕訳ID */
-    private Long id;
+//    private Long id;
 	/**
 	 * 取引日
 	 */

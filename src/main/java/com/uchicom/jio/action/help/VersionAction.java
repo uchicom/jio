@@ -16,6 +16,10 @@ import com.uchicom.ui.util.DialogUtil;
  */
 public class VersionAction extends ConfirmAction {
 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public VersionAction(JournalFrame journalFrame) {
 		super(journalFrame);
 	}

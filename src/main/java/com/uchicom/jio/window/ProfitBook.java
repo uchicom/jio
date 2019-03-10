@@ -14,14 +14,27 @@ import com.uchicom.jio.bean.Journal;
 import com.uchicom.jio.table.BalanceTableModel;
 import com.uchicom.jio.table.SelectCellEditor;
 
+/**
+ * 損益計算書画面.
+ * 
+ * @author Shigeki.Uchiyama
+ *
+ */
 public class ProfitBook extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	BalanceTableModel balanceModel;
+
 	public ProfitBook(List<Journal> journalList) {
 		super("損益計算書");
 		balanceModel = new BalanceTableModel(journalList);
 		initComponents();
 	}
-	//現金出納帳を表示する。
+
+	// 現金出納帳を表示する。
 	private void initComponents() {
 		DefaultTableColumnModel columnModel = new DefaultTableColumnModel();
 		TableColumn tableColumn = new TableColumn(0);

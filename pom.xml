@@ -1,13 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.uchicom</groupId>
 	<artifactId>jio</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
-	<name>wjm</name>
+	<name>jio</name>
 	<description>web viewer</description>
-	<url>https://uchicom.com/wjm.htm</url>
+	<url>https://uchicom.com/jio.htm</url>
 	<licenses>
 		<license>
 			<name>Apache License 2.0</name>
@@ -24,9 +25,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<url>https://github.com/uchicom/wjm</url>
-		<connection>scm:git:git@github.com:uchicom/wjm.git</connection>
-		<developerConnection>scm:git:git@github.com:uchicom/wjm.git</developerConnection>
+		<url>https://github.com/uchicom/jio</url>
+		<connection>scm:git:git@github.com:uchicom/jio.git</connection>
+		<developerConnection>scm:git:git@github.com:uchicom/jio.git</developerConnection>
 	</scm>
 	<distributionManagement>
 		<snapshotRepository>
@@ -131,6 +132,11 @@
 			<groupId>com.uchicom</groupId>
 			<artifactId>ui</artifactId>
 			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gitblit.iciql</groupId>
+			<artifactId>iciql</artifactId>
+			<version>2.2.0</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -1,6 +1,8 @@
 // (c) 2013 uchicom
 package com.uchicom.jio.table;
 
+import java.util.logging.Logger;
+
 import javax.swing.text.AttributeSet;
 import javax.swing.text.PlainDocument;
 
@@ -14,10 +16,13 @@ public class LongDocument extends PlainDocument {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
+	
+
+	private static final Logger logger = Logger.getLogger(LongDocument.class.getCanonicalName());
 
 	@Override
 	public void insertString(int offset, String str, AttributeSet attributes) {
-		System.out.println("insertString:" + offset + ":" + str + ":" + attributes);
+		logger.info("insertString:" + offset + ":" + str + ":" + attributes);
 		StringBuffer strBuff = new StringBuffer(str.length());
 		try {
 			if (str.matches("^.*[^0-9０-９].*$")) {

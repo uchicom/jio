@@ -4,6 +4,7 @@ package com.uchicom.jio.table;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -14,6 +15,7 @@ import com.uchicom.jio.bean.Transaction;
 
 public class BookTableModel extends DefaultTableModel {
 
+	private static final Logger logger = Logger.getLogger(BookTableModel.class.getCanonicalName());
 	List<SubJournal> bookList = new ArrayList<>();
 	public static final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 	/**
@@ -27,7 +29,7 @@ public class BookTableModel extends DefaultTableModel {
 	}
 
 	public void setAccountName(String accountName) {
-		System.out.println("rowList" + rowList.size());
+		logger.info("rowList" + rowList.size());
 		bookList.clear();
 		int balance = 0;
 		for (Journal journal : rowList) {
@@ -81,7 +83,7 @@ public class BookTableModel extends DefaultTableModel {
 				}
 			}
 		}
-		System.out.println("bookList:" + bookList.size());
+		logger.info("bookList:" + bookList.size());
 	}
 
 	public Object getValueAt(int row, int col) {

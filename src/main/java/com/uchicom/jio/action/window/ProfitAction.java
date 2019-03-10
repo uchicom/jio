@@ -14,6 +14,10 @@ import com.uchicom.jio.window.JournalFrame;
  */
 public class ProfitAction extends ConfirmAction {
 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public ProfitAction(JournalFrame journalFrame) {
 		super(journalFrame);
 	}

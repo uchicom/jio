@@ -18,6 +18,10 @@ import com.uchicom.jio.window.JournalFrame;
  */
 public class HelpAction extends ConfirmAction {
 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public HelpAction(JournalFrame journalFrame) {
 		super(journalFrame);
 	}

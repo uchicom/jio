@@ -10,6 +10,7 @@ import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
@@ -36,6 +37,7 @@ import com.uchicom.jio.window.JournalFrame;
  */
 public class TransactionTableCellEditor implements TableCellEditor {
 
+	private static final Logger logger = Logger.getLogger(TransactionTableCellEditor.class.getCanonicalName());
 	private List<CellEditorListener> listenerList = new LinkedList<CellEditorListener>();
 	JTable table;
 	JournalFrame journalFrame;
@@ -58,7 +60,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 		// @Override
 		// public void actionPerformed(ActionEvent e) {
 		//
-		// System.out.println("actioneditor" + e);
+		// logger.info("actioneditor" + e);
 		// }
 		// });
 		// comboBox.addActionListener(new ActionListener() {
@@ -66,7 +68,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 		// @Override
 		// public void actionPerformed(ActionEvent e) {
 		//
-		// System.out.println("actioncombobox" + e);
+		// logger.info("actioncombobox" + e);
 		//
 		// }
 		// });
@@ -74,7 +76,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				System.out.println("itemStateChanged" + arg0);
+				logger.info("itemStateChanged" + arg0);
 				if (arg0.getStateChange() == ItemEvent.SELECTED) {
 					if (list != null && list.size() == 1) {
 						Transaction bean = list.get(0);
@@ -126,13 +128,13 @@ public class TransactionTableCellEditor implements TableCellEditor {
 		// @Override
 		// public void focusLost(FocusEvent e) {
 		// // TODO 自動生成されたメソッド・スタブ
-		// System.out.println("focusLost:combobox" + e);
+		// logger.info("focusLost:combobox" + e);
 		// }
 		//
 		// @Override
 		// public void focusGained(FocusEvent e) {
 		// // TODO 自動生成されたメソッド・スタブ
-		// System.out.println("focusGained:comboox" + e);
+		// logger.info("focusGained:comboox" + e);
 		// }
 		// });
 
@@ -146,6 +148,11 @@ public class TransactionTableCellEditor implements TableCellEditor {
 
 		comboBoxCellEditor = new DefaultCellEditor(comboBox) {
 
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			/*
 			 * (non-Javadoc)
 			 *
@@ -154,9 +161,9 @@ public class TransactionTableCellEditor implements TableCellEditor {
 			@Override
 			public Object getCellEditorValue() {
 				Object object = comboBox.getEditor().getItem();
-				System.out.println("getCellEditorValue:" + object);
-				System.out.println("getCellEditorValue:" + comboBox.getSelectedItem());
-				System.out.println("getCellEditorValue:" + comboBox.getEditor().getItem());
+				logger.info("getCellEditorValue:" + object);
+				logger.info("getCellEditorValue:" + comboBox.getSelectedItem());
+				logger.info("getCellEditorValue:" + comboBox.getEditor().getItem());
 
 
 				Account account = null;
@@ -206,7 +213,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 	 */
 	@Override
 	public void addCellEditorListener(CellEditorListener l) {
-		System.out.println("addCellEditorListener");
+		logger.info("addCellEditorListener");
 
 		listenerList.add(l);
 
@@ -219,7 +226,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 	 */
 	@Override
 	public void cancelCellEditing() {
-		System.out.println("cancelCellEditing");
+		logger.info("cancelCellEditing");
 		List<CellEditorListener> cancelList = new ArrayList<CellEditorListener>();
 		cancelList.addAll(listenerList);
 		for (CellEditorListener listener : cancelList) {
@@ -235,7 +242,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 	 */
 	@Override
 	public Object getCellEditorValue() {
-		System.out.println("getCellEditorValue");
+		logger.info("getCellEditorValue");
 		returnComponent = null;
 		return list;
 	}
@@ -265,7 +272,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 	 */
 	@Override
 	public void removeCellEditorListener(CellEditorListener l) {
-		System.out.println("removeCellEditorListener:TransactionTableCellEditor");
+		logger.info("removeCellEditorListener:TransactionTableCellEditor");
 		listenerList.remove(l);
 	}
 
@@ -276,7 +283,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 	 */
 	@Override
 	public boolean shouldSelectCell(EventObject anEvent) {
-		System.out.println("shouldSelectCell:TransactionTableCellEditor");
+		logger.info("shouldSelectCell:TransactionTableCellEditor");
 		return true;
 	}
 
@@ -287,25 +294,25 @@ public class TransactionTableCellEditor implements TableCellEditor {
 	 */
 	@Override
 	public boolean stopCellEditing() {
-		System.out.println("stopCellEditing");
+		logger.info("stopCellEditing");
 		if (returnComponent instanceof JTable) {
-			System.out.println("jtable");
+			logger.info("jtable");
 			comboBoxCellEditor.stopCellEditing();
 			defaultCellEditor.stopCellEditing();
 			table.editingStopped(new ChangeEvent(table));
 			journalFrame.getTable().editingStopped(new ChangeEvent(journalFrame.getTable()));
 //			table.repaint();
 		} else {
-			System.out.println("not jtable");
+			logger.info("not jtable");
 			journalFrame.getTable().editingStopped(new ChangeEvent(journalFrame.getTable()));
 			//jioFrame.getModel().fireTableDataChanged();
 		}
-//		System.out.println("stopCellEditing:TransactionTableCellEditor");
-//		System.out.println(comboBox.getSelectedIndex());
+//		logger.info("stopCellEditing:TransactionTableCellEditor");
+//		logger.info(comboBox.getSelectedIndex());
 //		if (comboBox.getSelectedItem() != null) {
-//			System.out.println("a:" + comboBox.getSelectedItem());
-//			System.out.println("b:" + comboBoxCellEditor.getCellEditorValue());
-//			System.out.println("c:" + comboBox.getEditor().getItem());
+//			logger.info("a:" + comboBox.getSelectedItem());
+//			logger.info("b:" + comboBoxCellEditor.getCellEditorValue());
+//			logger.info("c:" + comboBox.getEditor().getItem());
 //
 //			List<CellEditorListener> stopList = new ArrayList<CellEditorListener>();
 //			stopList.addAll(listenerList);
@@ -321,10 +328,10 @@ public class TransactionTableCellEditor implements TableCellEditor {
 //				table.editingStopped(new ChangeEvent(table));
 //				table.repaint();
 //			} else {
-//				System.out.println(comboBox.getSelectedItem().toString());
+//				logger.info(comboBox.getSelectedItem().toString());
 //				if (list == null) {
 //					// エラー
-//					System.out.println("listがおかしい");
+//					logger.info("listがおかしい");
 //				} else {
 //
 //					Account account = null;
@@ -346,7 +353,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 //				}
 //			}
 //		} else {
-//			System.out.println("selectedItem = null");
+//			logger.info("selectedItem = null");
 //		}
 
 		return true;
@@ -365,7 +372,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-		System.out.println("getTableCellEditorComponent" + row + ",");
+		logger.info("getTableCellEditorComponent" + row + ",");
 
 		list = (List<Transaction>) value;
 		if (list == null) {
@@ -391,8 +398,8 @@ public class TransactionTableCellEditor implements TableCellEditor {
 				returnComponent = comboBox;
 			}
 		}
-		System.out.println(accountList);
-		System.out.println(returnComponent);
+		logger.info(accountList.toString());
+		logger.info(returnComponent.toString());
 		return returnComponent;
 	}
 

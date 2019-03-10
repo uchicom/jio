@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -50,6 +53,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.undo.UndoManager;
 
+import com.uchicom.csve.util.CSVReader;
 import com.uchicom.jio.action.edit.AddCreditAction;
 import com.uchicom.jio.action.edit.AddDebitAction;
 import com.uchicom.jio.action.edit.CopyAction;
@@ -60,6 +64,7 @@ import com.uchicom.jio.action.edit.InsertAction;
 import com.uchicom.jio.action.edit.PasteAction;
 import com.uchicom.jio.action.file.CloseAction;
 import com.uchicom.jio.action.file.CreateAction;
+import com.uchicom.jio.action.file.ImportAction;
 import com.uchicom.jio.action.file.OpenAction;
 import com.uchicom.jio.action.file.PrintAction;
 import com.uchicom.jio.action.file.SaveAction;
@@ -88,13 +93,14 @@ import com.uchicom.ui.util.DialogUtil;
 import com.uchicom.ui.util.UIStore;
 
 /**
- * 仕訳のメイン画面とメイン呼び出し
+ * 仕訳一覧画面.
  *
  * @author Uchiyama Shigeki
  *
  */
 public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
-
+	/** ロガー */
+	private static final Logger logger = Logger.getLogger(JournalFrame.class.getCanonicalName());
 	/**
 	 * シリアルバージョン(現状使う想定なし)
 	 */
@@ -181,8 +187,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 	private Properties actionResource = new Properties();
 
-	private static final ResourceBundle resourceBundle = ResourceBundle
-			.getBundle("com.uchicom.jio.resource");
+	private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.uchicom.jio.resource");
 
 	/** 勘定リスト */
 	Vector<Account> accountList = new Vector<>();
@@ -190,7 +195,8 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 	/** 借方 */
 	private TableCellEditor debitCellEditor = new TransactionTableCellEditor(accountList, TransactionType.Debit, this);
 	/** 貸方 */
-	private TableCellEditor creditCellEditor = new TransactionTableCellEditor(accountList, TransactionType.Credit, this);
+	private TableCellEditor creditCellEditor = new TransactionTableCellEditor(accountList, TransactionType.Credit,
+			this);
 	List<Journal> journalList = new ArrayList<Journal>();
 	/**
 	 * テーブル
@@ -217,14 +223,12 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 	 * 画面コンポーネントの初期化
 	 */
 	public void initComponents() {
-		try {
-			actionResource.load(new FileInputStream("conf/jioAction.properties"));
+		try (FileInputStream fis = new FileInputStream("conf/jioAction.properties")) {
+			actionResource.load(fis);
 		} catch (FileNotFoundException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "初期設定ファイルが見つかりません.", e);
 		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "初期設定ファイルが読み込み時にIOエラーが発生しました.", e);
 		}
 
 		initAccountView();
@@ -233,7 +237,6 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 		// 子画面は生成しておく
 		initBook();
-
 
 		// 動作設定
 		initBehaviour();
@@ -258,10 +261,10 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 	private void initProperty() {
 
 		File file = new File(CONF_FILE_PATH);
-		FileInputStream fis = null;
-		try {
-			if (file.exists()) {
-				fis = new FileInputStream(file);
+		if (file.exists()) {
+
+			try (FileInputStream fis = new FileInputStream(file);) {
+
 				prop.load(fis);
 				// 画面の初期位置取得
 				setWindowSize(JournalFrame.this, PROP_KEY_JOURNAL_WINDOW);
@@ -293,21 +296,11 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 					}
 
 				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			// ファイル入力ストリームのクローズ処理
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					fis = null;
-				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
+
 	}
 
 	/**
@@ -331,8 +324,8 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 			public void windowClosing(WindowEvent arg0) {
 				// 設定プロパティファイル書き込み
 				File file = new File(CONF_FILE_PATH);
-				FileOutputStream fos = null;
-				try {
+
+				try (FileOutputStream fos = new FileOutputStream(file)) {
 					// 画面の位置を保持する
 					setWindowProperty(JournalFrame.this, PROP_KEY_JOURNAL_WINDOW);
 					setWindowProperty(accountListBook, PROP_KEY_ACCOUNT_WINDOW);
@@ -341,7 +334,8 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 					setWindowProperty(bookMap.get(PROP_KEY_ACCOUNT_PAY_WINDOW), PROP_KEY_ACCOUNT_PAY_WINDOW);
 					setWindowProperty(bookMap.get(PROP_KEY_COST_WINDOW), PROP_KEY_COST_WINDOW);
 					setWindowProperty(monthlyBookMap.get(PROP_KEY_MONTHLY_SALES_WINDOW), PROP_KEY_MONTHLY_SALES_WINDOW);
-					setWindowProperty(monthlyBookMap.get(PROP_KEY_MONTHLY_PURCHASE_WINDOW), PROP_KEY_MONTHLY_PURCHASE_WINDOW);
+					setWindowProperty(monthlyBookMap.get(PROP_KEY_MONTHLY_PURCHASE_WINDOW),
+							PROP_KEY_MONTHLY_PURCHASE_WINDOW);
 					setWindowProperty(balanceBook, PROP_KEY_BALANCE_WINDOW);
 					setWindowProperty(profitBook, PROP_KEY_PROFIT_WINDOW);
 
@@ -356,7 +350,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 						prop.setProperty(PROP_KEY_FILE, selectedFile.getCanonicalPath());
 					}
 
-					System.out.println(UIManager.getLookAndFeel().getClass().getCanonicalName());
+					logger.info(UIManager.getLookAndFeel().getClass().getCanonicalName());
 					// ルックアンドフィール
 					prop.setProperty(PROP_KEY_LOOK_AND_FEEL, UIManager.getLookAndFeel().getClass().getCanonicalName());
 
@@ -364,25 +358,13 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 					if (!file.exists()) {
 						file.createNewFile();
 					}
-					fos = new FileOutputStream(file);
 					prop.store(fos, PROP_COMMENT);
-					fos.flush();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
-				} finally {
-					// ファイル出力ストリームのクローズ処理
-					if (fos != null) {
-						try {
-							fos.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						} finally {
-							fos = null;
-						}
-					}
 				}
+				JournalFrame.this.dispose();
 			}
 
 			@Override
@@ -453,6 +435,9 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		menuItem = new JMenuItem(new CreateAction(this));
 		menu.add(menuItem);
 		menuItem = new JMenuItem(new SaveAction(this));
+		menu.add(menuItem);
+		menu.addSeparator();
+		menuItem = new JMenuItem(new ImportAction(this));
 		menu.add(menuItem);
 		menu.addSeparator();
 		menuItem = new JMenuItem(new PrintAction(this));
@@ -531,13 +516,13 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				System.out.println("JTable.focusLost");
+				logger.info("JTable.focusLost");
 			}
 
 			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO 自動生成されたメソッド・スタブ
-				System.out.println("JMenuBar.focusGained");
+				logger.info("JMenuBar.focusGained");
 			}
 		});
 
@@ -552,7 +537,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO 自動生成されたメソッド・スタブ
-				System.out.println("main.focusGained");
+				logger.info("main.focusGained");
 			}
 		});
 		this.addWindowFocusListener(new WindowFocusListener() {
@@ -560,13 +545,13 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 			@Override
 			public void windowLostFocus(WindowEvent e) {
 				// TODO 自動生成されたメソッド・スタブ
-				System.out.println("weLostFocus:" + e);
+				logger.info("weLostFocus:" + e);
 			}
 
 			@Override
 			public void windowGainedFocus(WindowEvent e) {
 				// TODO 自動生成されたメソッド・スタブ
-				System.out.println("weLostGained:" + e);
+				logger.info("weLostGained:" + e);
 
 			}
 		});
@@ -603,19 +588,19 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				System.out.println("keyPressed" + arg0.toString());
+				logger.info("keyPressed" + arg0.toString());
 
 			}
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				System.out.println("keyReleased" + arg0.toString());
+				logger.info("keyReleased" + arg0.toString());
 
 			}
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				System.out.println("keyTyped" + arg0.toString());
+				logger.info("keyTyped" + arg0.toString());
 
 			}
 
@@ -624,13 +609,13 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 			@Override
 			public void caretPositionChanged(InputMethodEvent arg0) {
-				System.out.println("inputMethodTextChanged" + arg0.toString());
+				logger.info("inputMethodTextChanged" + arg0.toString());
 
 			}
 
 			@Override
 			public void inputMethodTextChanged(InputMethodEvent arg0) {
-				System.out.println("inputMethodTextChanged" + arg0.toString());
+				logger.info("inputMethodTextChanged" + arg0.toString());
 
 			}
 
@@ -639,13 +624,13 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 			@Override
 			public void focusGained(FocusEvent arg0) {
-				System.out.println("focusGained" + arg0.toString());
+				logger.info("focusGained" + arg0.toString());
 
 			}
 
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				System.out.println("focusLost" + arg0.toString());
+				logger.info("focusLost" + arg0.toString());
 				// JTextArea textArea = (JTextArea)arg0.getSource();
 				// if (textArea.getLineCount() > 0) {
 				// table.setRowHeight(table.getSelectedRow(),
@@ -733,14 +718,14 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 			@Override
 			public void focusLost(FocusEvent e) {
 				// TODO 自動生成されたメソッド・スタブ
-				System.out.println("JTable.focusLost");
+				logger.info("JTable.focusLost");
 
 			}
 
 			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO 自動生成されたメソッド・スタブ
-				System.out.println("JTable.focusGained");
+				logger.info("JTable.focusGained");
 			}
 		});
 		table.setSurrendersFocusOnKeystroke(true);
@@ -785,8 +770,116 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		if (table.getCellEditor() != null) {
 			table.getCellEditor().cancelCellEditing();
 		} else {
-			System.out.println("cellエディターがぬる");
+			logger.info("cellエディターがぬる");
 		}
+	}
+
+	/**
+	 * CSVからインポートします.
+	 */
+	public void importCsv() {
+		JFileChooser chooser = new JFileChooser();
+		chooser.setSelectedFile(selectedFile);
+		switch (chooser.showOpenDialog(this)) {
+		case JFileChooser.CANCEL_OPTION:
+			break;
+		case JFileChooser.APPROVE_OPTION:
+			File file = chooser.getSelectedFile();
+			if (file.exists()) {
+				selectedFile = file;
+				importCsvFile();
+			} else {
+				DialogUtil.showMessageDialog(this, "ファイルがありません。");
+			}
+			break;
+		case JFileChooser.ERROR_OPTION:
+			DialogUtil.showMessageDialog(this, "Errorが発生しました。");
+			break;
+		default:
+		}
+
+	}
+
+	/**
+	 * CSVからインポートします.
+	 */
+	private void importCsvFile() {
+		journalList.clear();
+		accountList.clear();
+		// ファイルが
+		if (selectedFile.exists() && selectedFile.isFile()) {
+			try (CSVReader csvReader = new CSVReader(selectedFile, "utf-8")) {
+
+				Map<Long, Account> accountMap = new HashMap<>();
+				Map<String, Account> accountNameMap = new HashMap<>();
+				long journalId = 1;
+				long transactionId = 1;
+				long accountId = 1;
+				String[] strings = null;
+				csvReader.getNextCsvLine(6, true);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				while ((strings = csvReader.getNextCsvLine(6, true)) != null) {
+					Journal journal = null;
+
+					if (strings[0].isEmpty()) {
+						journal = journalList.get(journalList.size() - 1);
+					} else {
+						String[] journalParams = { String.valueOf(journalId++),
+								String.valueOf(sdf.parse(strings[0]).getTime() / 100000), strings[3], strings[5] };
+						journal = Journal.create(journalParams);
+					}
+					// 2
+					Account account = null;
+					if (!accountNameMap.containsKey(strings[2])) {
+						String[] accountParams = { String.valueOf(accountId), null, strings[2], null, null };
+						account = Account.create(accountParams);
+						accountNameMap.put(strings[2], account);
+						accountMap.put(accountId, account);
+						accountId++;
+						accountList.add(account);
+					} else {
+						account = accountNameMap.get(strings[2]);
+					}
+
+					String[] transactionParams1 = { String.valueOf(transactionId++), String.valueOf(journal.getId()),
+							"1", String.valueOf(account.getId()), strings[1] };
+					journal.add(Transaction.create(transactionParams1, accountMap));
+
+					if (strings[4] != null && !strings[4].isEmpty()) {
+						// 4
+						account = null;
+						if (!accountNameMap.containsKey(strings[4])) {
+							String[] accountParams = { String.valueOf(accountId), null, strings[4], null, null };
+							account = Account.create(accountParams);
+							accountNameMap.put(strings[4], account);
+							accountMap.put(accountId, account);
+							accountId++;
+							accountList.add(account);
+						} else {
+							account = accountNameMap.get(strings[4]);
+						}
+
+						String[] transactionParams2 = { String.valueOf(transactionId++),
+								String.valueOf(journal.getId()), "0", String.valueOf(account.getId()), strings[5] };
+						journal.add(Transaction.create(transactionParams2, accountMap));
+					}
+
+					if (!strings[0].isEmpty()) {
+						journalList.add(journal);
+					}
+				}
+				model.fireTableDataChanged();
+				setTitle(TITLE_NAME + " - " + selectedFile.getName());
+				DialogUtil.showMessageDialog(this, "インポート処理が完了しました。");
+			} catch (FileNotFoundException e) {
+				logger.log(Level.SEVERE, "ファイルが見つかりません", e);
+			} catch (IOException e) {
+				logger.log(Level.SEVERE, "CSV読み込み時にエラーが発生しました。", e);
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, "CSVインポートに失敗しました", e);
+			}
+		}
+
 	}
 
 	public void open() {
@@ -819,7 +912,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		journalList.clear();
 		accountList.clear();
 		if (selectedFile.exists() && selectedFile.isFile()) {
-			try (ZipCSVReader csvReader = new ZipCSVReader(selectedFile, "utf8")){
+			try (ZipCSVReader csvReader = new ZipCSVReader(selectedFile, "utf8")) {
 				Map<Long, Journal> journalMap = new HashMap<>();
 				Map<Long, Account> accountMap = new HashMap<>();
 				String[] strings = null;
@@ -887,7 +980,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 			} else {
 				try {
-					System.out.println(file.getName());
+					logger.info(file.getName());
 					file.createNewFile();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -908,7 +1001,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 	public void save() {
 		if (selectedFile == null || !selectedFile.exists()) {
 			// ファイル
-			System.out.println("ファイル選択無し");
+			logger.info("ファイル選択無し");
 		} else {
 			if (selectedFile != null && selectedFile.exists()) {
 				try (ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(selectedFile));) {
@@ -964,6 +1057,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 	public void showAccountList() {
 		accountListBook.setVisible(true);
 	}
+
 	public void showProfitBook() {
 		profitBook.setVisible(true);
 	}
@@ -982,6 +1076,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 	/** 貸借対照表 */
 	BalanceBook balanceBook = new BalanceBook(journalList);
+
 	/**
 	 * 勘定一覧画面を初期化します.
 	 */
@@ -992,23 +1087,24 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		accountListBook.pack();
 
 	}
+
 	public void showBalanceBook() {
 		balanceBook.setVisible(true);
 	}
 
-
 	/**
 	 * 勘定科目に紐づく仕訳を表示する。
+	 * 
 	 * @param accountName
 	 * @param title
 	 */
 	public void showBook(String key) {
 		AccountBook accountBook = null;
 		if (bookMap.containsKey(key)) {
-			//作成済み
+			// 作成済み
 			accountBook = bookMap.get(key);
 		} else {
-			//新規作成
+			// 新規作成
 			accountBook = new AccountBook(journalList);
 			accountBook.pack();
 			setWindowSize(accountBook, key);
@@ -1022,16 +1118,17 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 	/**
 	 * 勘定科目に紐づく仕訳を月ごとに集計して表示する。
+	 * 
 	 * @param accountName
 	 * @param title
 	 */
 	public void showMonthlyBook(String key) {
 		MonthlyBook monthlyBook = null;
 		if (monthlyBookMap.containsKey(key)) {
-			//作成済み
+			// 作成済み
 			monthlyBook = monthlyBookMap.get(key);
 		} else {
-			//新規作成
+			// 新規作成
 			monthlyBook = new MonthlyBook(journalList);
 			monthlyBook.pack();
 			setWindowSize(monthlyBook, key);
@@ -1078,7 +1175,6 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		setWindowSize(profitBook, PROP_KEY_PROFIT_WINDOW);
 	}
 
-
 	@Override
 	public JournalFrame getMainComponent() {
 		return this;
@@ -1105,7 +1201,9 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		creditCellEditor.stopCellEditing();
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see com.uchicom.ui.util.UIStore#getResourceBundle()
 	 */
 	@Override
