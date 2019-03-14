@@ -3,6 +3,7 @@ package com.uchicom.jio.window;
 
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -41,6 +42,14 @@ public class AccountBook extends JFrame {
 
 	// 現金出納帳を表示する。
 	private void initComponents() {
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/uchicom/jio/icon.png")).getImage());
+
+		// 画面作成
+		initView();
+	}
+
+	private void initView() {
+
 		DefaultTableColumnModel columnModel = new DefaultTableColumnModel();
 		TableColumn tableColumn = new TableColumn(0);
 

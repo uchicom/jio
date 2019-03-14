@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -47,7 +48,8 @@ public class AccountListBook extends JFrame {
 	}
 
 	public void initComponents() {
-
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/uchicom/jio/icon.png")).getImage());
+		
 		// 動作設定
 		initBehaviour();
 
@@ -93,6 +95,7 @@ public class AccountListBook extends JFrame {
 	}
 
 	public void initView() {
+		
 		// データ格納リスト
 
 		// テーブルモデル

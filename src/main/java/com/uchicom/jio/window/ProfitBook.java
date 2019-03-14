@@ -3,6 +3,7 @@ package com.uchicom.jio.window;
 
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -36,6 +37,16 @@ public class ProfitBook extends JFrame {
 
 	// 現金出納帳を表示する。
 	private void initComponents() {
+		// アイコン
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/uchicom/jio/icon.png")).getImage());
+
+
+		// 画面作成
+		initView();
+	}
+
+	private void initView() {
+
 		DefaultTableColumnModel columnModel = new DefaultTableColumnModel();
 		TableColumn tableColumn = new TableColumn(0);
 		TableCellEditor cellEditor = new SelectCellEditor();
@@ -57,5 +68,7 @@ public class ProfitBook extends JFrame {
 		JTable table = new JTable(balanceModel, columnModel);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		getContentPane().add(new JScrollPane(table));
+		
 	}
+	
 }

@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -64,6 +66,8 @@ import com.uchicom.jio.action.edit.InsertAction;
 import com.uchicom.jio.action.edit.PasteAction;
 import com.uchicom.jio.action.file.CloseAction;
 import com.uchicom.jio.action.file.CreateAction;
+import com.uchicom.jio.action.file.ExportAccountAction;
+import com.uchicom.jio.action.file.ImportAccountAction;
 import com.uchicom.jio.action.file.ImportAction;
 import com.uchicom.jio.action.file.OpenAction;
 import com.uchicom.jio.action.file.PrintAction;
@@ -223,6 +227,9 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 	 * 画面コンポーネントの初期化
 	 */
 	public void initComponents() {
+		// アイコン
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/uchicom/jio/icon.png")).getImage());
+
 		try (FileInputStream fis = new FileInputStream("conf/jioAction.properties")) {
 			actionResource.load(fis);
 		} catch (FileNotFoundException e) {
@@ -437,9 +444,12 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		menuItem = new JMenuItem(new SaveAction(this));
 		menu.add(menuItem);
 		menu.addSeparator();
-		menuItem = new JMenuItem(new ImportAction(this));
-		menu.add(menuItem);
+
+		menu.add(new JMenuItem(new ImportAction(this)));
+		menu.add(new JMenuItem(new ImportAccountAction(this)));
+		menu.add(new JMenuItem(new ExportAccountAction(this)));
 		menu.addSeparator();
+
 		menuItem = new JMenuItem(new PrintAction(this));
 		menu.add(menuItem);
 		menu.addSeparator();
@@ -705,8 +715,6 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 	 * 表示を初期化する。
 	 */
 	private void initView() {
-		// アイコン
-		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/uchicom/jio/icon.png")).getImage());
 		// テーブルモデル
 		model = new ListTableModel(journalList, 5);
 		// テーブル
@@ -774,10 +782,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 		}
 	}
 
-	/**
-	 * CSVからインポートします.
-	 */
-	public void importCsv() {
+	public void select(Consumer<File> function) {
 		JFileChooser chooser = new JFileChooser();
 		chooser.setSelectedFile(selectedFile);
 		switch (chooser.showOpenDialog(this)) {
@@ -785,9 +790,10 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 			break;
 		case JFileChooser.APPROVE_OPTION:
 			File file = chooser.getSelectedFile();
-			if (file.exists()) {
-				selectedFile = file;
-				importCsvFile();
+			if (file.exists() && file.isFile()) {
+
+				function.accept(file);
+
 			} else {
 				DialogUtil.showMessageDialog(this, "ファイルがありません。");
 			}
@@ -800,86 +806,152 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
 	}
 
+	public void create(Consumer<File> function) {
+		JFileChooser chooser = new JFileChooser();
+		chooser.setSelectedFile(selectedFile);
+		switch (chooser.showOpenDialog(this)) {
+		case JFileChooser.CANCEL_OPTION:
+			break;
+		case JFileChooser.APPROVE_OPTION:
+			File file = chooser.getSelectedFile();
+			if (file.exists() && file.isFile()) {
+				if (JOptionPane.OK_OPTION == DialogUtil.showConfirmDialog(this, "上書きしてよいですか？")) {
+					function.accept(file);
+				}
+			} else {
+				function.accept(file);
+			}
+			break;
+		case JFileChooser.ERROR_OPTION:
+			DialogUtil.showMessageDialog(this, "Errorが発生しました。");
+			break;
+		default:
+		}
+
+	}
+
+	public void exportAccountCsv(File file) {
+		try (FileOutputStream fis = new FileOutputStream(file)) {
+			for (Account account : accountList) {
+				fis.write(account.toCsv().getBytes(StandardCharsets.UTF_8));
+				fis.write('\n');
+			}
+			DialogUtil.showMessageDialog(this, "エクスポート処理が完了しました。");
+		} catch (FileNotFoundException e) {
+			logger.log(Level.SEVERE, "ファイルが見つかりません", e);
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "CSV出力時にエラーが発生しました。", e);//TODO 画面にメッセージ出さないと。。
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "CSVエクスポートに失敗しました", e);
+		}
+	}
+
+	/**
+	 * CSVから勘定一覧をインポートします
+	 * 
+	 * @param file
+	 */
+	public void importAccountCsv(File file) {
+		try (CSVReader csvReader = new CSVReader(file, "utf-8")) {
+			String[] strings = null;
+			while ((strings = csvReader.getNextCsvLine(6, true)) != null) {
+				String[] params = strings;
+				accountList.forEach(account -> {
+					if (account.getName().equals(params[2])) {
+						account.setCd(params[1]);
+						account.setCategory(params[3]);
+						account.setSortKey(Integer.parseInt(params[4]));
+						account.setRate(Integer.parseInt(params[5]));
+					}
+				});
+			}
+			accountListBook.repaint();
+			DialogUtil.showMessageDialog(this, "インポート処理が完了しました。");
+		} catch (FileNotFoundException e) {
+			logger.log(Level.SEVERE, "ファイルが見つかりません", e);
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "CSV読み込み時にエラーが発生しました。", e);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "CSVインポートに失敗しました", e);
+		}
+
+	}
+
 	/**
 	 * CSVからインポートします.
 	 */
-	private void importCsvFile() {
+	public void importCsv(File file) {
 		journalList.clear();
 		accountList.clear();
 		// ファイルが
-		if (selectedFile.exists() && selectedFile.isFile()) {
-			try (CSVReader csvReader = new CSVReader(selectedFile, "utf-8")) {
+		try (CSVReader csvReader = new CSVReader(file, "utf-8")) {
+			Map<Long, Account> accountMap = new HashMap<>();
+			Map<String, Account> accountNameMap = new HashMap<>();
+			long journalId = 1;
+			long transactionId = 1;
+			long accountId = 1;
+			String[] strings = null;
+			csvReader.getNextCsvLine(6, true);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			while ((strings = csvReader.getNextCsvLine(6, true)) != null) {
+				Journal journal = null;
 
-				Map<Long, Account> accountMap = new HashMap<>();
-				Map<String, Account> accountNameMap = new HashMap<>();
-				long journalId = 1;
-				long transactionId = 1;
-				long accountId = 1;
-				String[] strings = null;
-				csvReader.getNextCsvLine(6, true);
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				while ((strings = csvReader.getNextCsvLine(6, true)) != null) {
-					Journal journal = null;
+				if (strings[0].isEmpty()) {
+					journal = journalList.get(journalList.size() - 1);
+				} else {
+					String[] journalParams = { String.valueOf(journalId++),
+							String.valueOf(sdf.parse(strings[0]).getTime() / 100000), strings[3], strings[5] };
+					journal = Journal.create(journalParams);
+				}
+				// 2
+				Account account = null;
+				if (!accountNameMap.containsKey(strings[2])) {
+					String[] accountParams = { String.valueOf(accountId), null, strings[2], null, null };
+					account = Account.create(accountParams);
+					accountNameMap.put(strings[2], account);
+					accountMap.put(accountId, account);
+					accountId++;
+					accountList.add(account);
+				} else {
+					account = accountNameMap.get(strings[2]);
+				}
 
-					if (strings[0].isEmpty()) {
-						journal = journalList.get(journalList.size() - 1);
-					} else {
-						String[] journalParams = { String.valueOf(journalId++),
-								String.valueOf(sdf.parse(strings[0]).getTime() / 100000), strings[3], strings[5] };
-						journal = Journal.create(journalParams);
-					}
-					// 2
-					Account account = null;
-					if (!accountNameMap.containsKey(strings[2])) {
-						String[] accountParams = { String.valueOf(accountId), null, strings[2], null, null };
+				String[] transactionParams1 = { String.valueOf(transactionId++), String.valueOf(journal.getId()), "1",
+						String.valueOf(account.getId()), strings[1] };
+				journal.add(Transaction.create(transactionParams1, accountMap));
+
+				if (strings[4] != null && !strings[4].isEmpty()) {
+					// 4
+					account = null;
+					if (!accountNameMap.containsKey(strings[4])) {
+						String[] accountParams = { String.valueOf(accountId), null, strings[4], null, null };
 						account = Account.create(accountParams);
-						accountNameMap.put(strings[2], account);
+						accountNameMap.put(strings[4], account);
 						accountMap.put(accountId, account);
 						accountId++;
 						accountList.add(account);
 					} else {
-						account = accountNameMap.get(strings[2]);
+						account = accountNameMap.get(strings[4]);
 					}
 
-					String[] transactionParams1 = { String.valueOf(transactionId++), String.valueOf(journal.getId()),
-							"1", String.valueOf(account.getId()), strings[1] };
-					journal.add(Transaction.create(transactionParams1, accountMap));
-
-					if (strings[4] != null && !strings[4].isEmpty()) {
-						// 4
-						account = null;
-						if (!accountNameMap.containsKey(strings[4])) {
-							String[] accountParams = { String.valueOf(accountId), null, strings[4], null, null };
-							account = Account.create(accountParams);
-							accountNameMap.put(strings[4], account);
-							accountMap.put(accountId, account);
-							accountId++;
-							accountList.add(account);
-						} else {
-							account = accountNameMap.get(strings[4]);
-						}
-
-						String[] transactionParams2 = { String.valueOf(transactionId++),
-								String.valueOf(journal.getId()), "0", String.valueOf(account.getId()), strings[5] };
-						journal.add(Transaction.create(transactionParams2, accountMap));
-					}
-
-					if (!strings[0].isEmpty()) {
-						journalList.add(journal);
-					}
+					String[] transactionParams2 = { String.valueOf(transactionId++), String.valueOf(journal.getId()),
+							"0", String.valueOf(account.getId()), strings[5] };
+					journal.add(Transaction.create(transactionParams2, accountMap));
 				}
-				model.fireTableDataChanged();
-				setTitle(TITLE_NAME + " - " + selectedFile.getName());
-				DialogUtil.showMessageDialog(this, "インポート処理が完了しました。");
-			} catch (FileNotFoundException e) {
-				logger.log(Level.SEVERE, "ファイルが見つかりません", e);
-			} catch (IOException e) {
-				logger.log(Level.SEVERE, "CSV読み込み時にエラーが発生しました。", e);
-			} catch (Exception e) {
-				logger.log(Level.SEVERE, "CSVインポートに失敗しました", e);
-			}
-		}
 
+				if (!strings[0].isEmpty()) {
+					journalList.add(journal);
+				}
+			}
+			model.fireTableDataChanged();
+			DialogUtil.showMessageDialog(this, "インポート処理が完了しました。");
+		} catch (FileNotFoundException e) {
+			logger.log(Level.SEVERE, "ファイルが見つかりません", e);
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "CSV読み込み時にエラーが発生しました。", e);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "CSVインポートに失敗しました", e);
+		}
 	}
 
 	public void open() {

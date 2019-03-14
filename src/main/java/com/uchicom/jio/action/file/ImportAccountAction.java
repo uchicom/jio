@@ -10,14 +10,14 @@ import com.uchicom.jio.window.JournalFrame;
  * @author Uchiyama Shigeki
  *
  */
-public class ImportAction extends ConfirmAction {
+public class ImportAccountAction extends ConfirmAction {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ImportAction(JournalFrame frame) {
+	public ImportAccountAction(JournalFrame frame) {
 		super(frame);
 	}
 	/* (non-Javadoc)
@@ -25,7 +25,7 @@ public class ImportAction extends ConfirmAction {
 	 */
 	@Override
 	public void action(ActionEvent arg0) {
-		journalFrame.select(file -> journalFrame.importCsv(file));
+		journalFrame.select(file -> journalFrame.importAccountCsv(file));
 	}
 
 }

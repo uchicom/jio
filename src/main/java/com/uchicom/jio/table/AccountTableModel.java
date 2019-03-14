@@ -82,7 +82,7 @@ public class AccountTableModel extends DefaultTableModel {
 				break;
 			case 4:
 				if (value != null) {
-					bean.setSortKey(Long.valueOf((String) value));
+					bean.setSortKey(Integer.parseInt((String) value));
 				}
 				break;
 			case 5:
