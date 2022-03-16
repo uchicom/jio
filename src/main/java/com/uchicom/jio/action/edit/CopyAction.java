@@ -2,8 +2,8 @@
 package com.uchicom.jio.action.edit;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.table.ListTableModel;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.table.ListTableModel;
+import com.uchicom.jio.ui.window.JournalBook;
 import java.awt.event.ActionEvent;
 
 /** @author Uchiyama Shigeki */
@@ -12,8 +12,8 @@ public class CopyAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public CopyAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public CopyAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /*
@@ -24,7 +24,7 @@ public class CopyAction extends ConfirmAction {
    */
   @Override
   public void action(ActionEvent e) {
-    ListTableModel model = journalFrame.getModel();
-    model.copy(journalFrame.getSelectedRows());
+    ListTableModel model = journalBook.getModel();
+    model.copy(journalBook.getSelectedRows());
   }
 }

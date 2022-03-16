@@ -2,7 +2,7 @@
 package com.uchicom.jio.action.window;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import java.awt.event.ActionEvent;
 
 /**
@@ -14,8 +14,8 @@ public class AccountsRecAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public AccountsRecAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public AccountsRecAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /* (non-Javadoc)
@@ -23,6 +23,6 @@ public class AccountsRecAction extends ConfirmAction {
    */
   @Override
   public void action(ActionEvent e) {
-    journalFrame.showBook(JournalFrame.PROP_KEY_ACCOUNT_REC_WINDOW);
+    journalBook.showBook(journalBook.PROP_KEY_ACCOUNT_REC_WINDOW);
   }
 }

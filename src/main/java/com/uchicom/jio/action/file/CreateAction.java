@@ -2,7 +2,7 @@
 package com.uchicom.jio.action.file;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import java.awt.event.ActionEvent;
 
 /** @author Uchiyama Shigeki */
@@ -10,8 +10,8 @@ public class CreateAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public CreateAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public CreateAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /*
@@ -22,6 +22,6 @@ public class CreateAction extends ConfirmAction {
    */
   @Override
   public void action(ActionEvent e) {
-    journalFrame.create();
+    journalBook.create();
   }
 }

@@ -2,7 +2,7 @@
 package com.uchicom.jio.action.window;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import java.awt.event.ActionEvent;
 
 /**
@@ -15,12 +15,12 @@ public class ProfitAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public ProfitAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public ProfitAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   @Override
   public void action(ActionEvent e) {
-    journalFrame.showProfitBook();
+    journalBook.showProfitBook();
   }
 }

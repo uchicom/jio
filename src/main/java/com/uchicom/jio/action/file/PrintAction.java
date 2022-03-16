@@ -2,8 +2,8 @@
 package com.uchicom.jio.action.file;
 
 import com.uchicom.jio.action.ConfirmAction;
+import com.uchicom.jio.ui.window.JournalBook;
 import com.uchicom.jio.util.JournalPrinter;
-import com.uchicom.jio.window.JournalFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
@@ -24,8 +24,8 @@ public class PrintAction extends ConfirmAction {
 
   private static final Logger logger = Logger.getLogger(PrintAction.class.getCanonicalName());
 
-  public PrintAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public PrintAction(JournalBook journalBook) {
+    super(journalBook);
     putValue(NAME, "印刷");
     // alt+でメニューを選択状態にするキー、メニューが開いている場合は選択するキーとなる。
     putValue(MNEMONIC_KEY, KeyEvent.VK_X);
@@ -40,7 +40,7 @@ public class PrintAction extends ConfirmAction {
   @Override
   public void action(ActionEvent e) {
     PrinterJob job = PrinterJob.getPrinterJob();
-    job.setPrintable(new JournalPrinter(journalFrame.getJournalList()));
+    job.setPrintable(new JournalPrinter(journalBook.getJournalList()));
 
     /* Construct the print request specification.
      * The print data is a Printable object.
@@ -54,7 +54,7 @@ public class PrintAction extends ConfirmAction {
 
     /* Create a print job */
     PrinterJob pj = PrinterJob.getPrinterJob();
-    pj.setPrintable(new JournalPrinter(journalFrame.getJournalList()));
+    pj.setPrintable(new JournalPrinter(journalBook.getJournalList()));
     /* locate a print service that can handle the request */
     PrintService[] services = PrinterJob.lookupPrintServices();
 

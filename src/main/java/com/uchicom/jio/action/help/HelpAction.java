@@ -2,7 +2,7 @@
 package com.uchicom.jio.action.help;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -19,8 +19,8 @@ public class HelpAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public HelpAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public HelpAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /*

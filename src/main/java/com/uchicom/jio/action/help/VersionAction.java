@@ -3,7 +3,7 @@ package com.uchicom.jio.action.help;
 
 import com.uchicom.jio.Constants;
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import com.uchicom.ui.util.DialogUtil;
 import java.awt.event.ActionEvent;
 
@@ -17,8 +17,8 @@ public class VersionAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public VersionAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public VersionAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /*

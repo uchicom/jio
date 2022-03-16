@@ -1,10 +1,10 @@
 // (C) 2013 uchicom
-package com.uchicom.jio.table;
+package com.uchicom.jio.ui.table;
 
 import com.uchicom.jio.bean.Account;
 import com.uchicom.jio.bean.Transaction;
 import com.uchicom.jio.enums.TransactionType;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -38,7 +38,7 @@ public class TransactionTableCellEditor implements TableCellEditor {
       Logger.getLogger(TransactionTableCellEditor.class.getCanonicalName());
   private List<CellEditorListener> listenerList = new LinkedList<CellEditorListener>();
   JTable table;
-  JournalFrame journalFrame;
+  JournalBook journalBook;
   /** 編集用コンボボックス */
   private JComboBox<Account> comboBox;
 
@@ -48,10 +48,10 @@ public class TransactionTableCellEditor implements TableCellEditor {
   TransactionType type;
 
   public TransactionTableCellEditor(
-      Vector<Account> accountList, TransactionType type, JournalFrame journalFrame) {
+      Vector<Account> accountList, TransactionType type, JournalBook journalBook) {
     this.type = type;
     this.accountList = accountList;
-    this.journalFrame = journalFrame;
+    this.journalBook = journalBook;
     ComboBoxModel<Account> model = new DefaultComboBoxModel<>(accountList);
     comboBox = new JComboBox<>(model);
 
@@ -295,11 +295,11 @@ public class TransactionTableCellEditor implements TableCellEditor {
       comboBoxCellEditor.stopCellEditing();
       defaultCellEditor.stopCellEditing();
       table.editingStopped(new ChangeEvent(table));
-      journalFrame.getTable().editingStopped(new ChangeEvent(journalFrame.getTable()));
+      journalBook.getTable().editingStopped(new ChangeEvent(journalBook.getTable()));
       //			table.repaint();
     } else {
       logger.info("not jtable");
-      journalFrame.getTable().editingStopped(new ChangeEvent(journalFrame.getTable()));
+      journalBook.getTable().editingStopped(new ChangeEvent(journalBook.getTable()));
       // jioFrame.getModel().fireTableDataChanged();
     }
     //		logger.info("stopCellEditing:TransactionTableCellEditor");

@@ -1,11 +1,11 @@
 // (C) 2013 uchicom
-package com.uchicom.jio.window;
+package com.uchicom.jio.ui.window;
 
 import com.uchicom.jio.action.edit.AccountAddAction;
 import com.uchicom.jio.action.edit.AccountRemoveAction;
 import com.uchicom.jio.bean.Account;
-import com.uchicom.jio.table.AccountTableModel;
-import com.uchicom.jio.table.LongDocument;
+import com.uchicom.jio.ui.table.AccountTableModel;
+import com.uchicom.jio.ui.table.LongDocument;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.logging.Logger;
@@ -35,11 +35,11 @@ public class AccountListBook extends JFrame {
   private static final Logger logger = Logger.getLogger(AccountListBook.class.getCanonicalName());
   private JTable table;
   private AccountTableModel model;
-  private JournalFrame journalFrame;
+  private JournalBook journalBook;
 
-  public AccountListBook(JournalFrame journalFrame) {
-    super(journalFrame.getResourceBundle().getString("title.account_list"));
-    this.journalFrame = journalFrame;
+  public AccountListBook(JournalBook journalBook) {
+    super(journalBook.getResourceBundle().getString("title.account_list"));
+    this.journalBook = journalBook;
   }
 
   public void initComponents() {
@@ -70,9 +70,9 @@ public class AccountListBook extends JFrame {
     menu.setMnemonic(KeyEvent.VK_E);
     menuBar.add(menu);
 
-    JMenuItem menuItem = new JMenuItem(new AccountAddAction(journalFrame, this));
+    JMenuItem menuItem = new JMenuItem(new AccountAddAction(journalBook, this));
     menu.add(menuItem);
-    menuItem = new JMenuItem(new AccountRemoveAction(journalFrame, this));
+    menuItem = new JMenuItem(new AccountRemoveAction(journalBook, this));
     menu.add(menuItem);
     //        // 区切り線
     //        menu.addSeparator();
@@ -92,7 +92,7 @@ public class AccountListBook extends JFrame {
     // データ格納リスト
 
     // テーブルモデル
-    model = new AccountTableModel(journalFrame.getAccountList(), 5);
+    model = new AccountTableModel(journalBook.getAccountList(), 5);
     // テーブル
     table = new JTable(model, createTableColumnModel());
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

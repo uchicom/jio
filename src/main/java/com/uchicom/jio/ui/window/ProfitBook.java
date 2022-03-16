@@ -1,9 +1,9 @@
 // (C) 2013 uchicom
-package com.uchicom.jio.window;
+package com.uchicom.jio.ui.window;
 
 import com.uchicom.jio.bean.Journal;
-import com.uchicom.jio.table.MonthlyTableModel;
-import com.uchicom.jio.table.SelectCellEditor;
+import com.uchicom.jio.ui.table.BalanceTableModel;
+import com.uchicom.jio.ui.table.SelectCellEditor;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -14,27 +14,21 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 /**
- * 月別勘定一覧画面.
+ * 損益計算書画面.
  *
- * @author uchicom: Shigeki Uchiyama
+ * @author Shigeki.Uchiyama
  */
-public class MonthlyBook extends JFrame {
+public class ProfitBook extends JFrame {
 
   /** */
   private static final long serialVersionUID = 1L;
 
-  MonthlyTableModel monthlyModel;
+  BalanceTableModel balanceModel;
 
-  public MonthlyBook(List<Journal> journalList) {
-    monthlyModel = new MonthlyTableModel(journalList);
+  public ProfitBook(List<Journal> journalList) {
+    super("損益計算書");
+    balanceModel = new BalanceTableModel(journalList);
     initComponents();
-  }
-
-  public void setAccountName(String accountName, String viewName) {
-    this.setTitle(viewName);
-    monthlyModel.setAccountName(accountName);
-    //		table = new JTable(model, new String[]{"日付", "科目", "摘要", "収入", "支出", "差引残高"});
-    monthlyModel.fireTableDataChanged();
   }
 
   // 現金出納帳を表示する。
@@ -51,20 +45,24 @@ public class MonthlyBook extends JFrame {
   private void initView() {
 
     DefaultTableColumnModel columnModel = new DefaultTableColumnModel();
-    TableCellEditor cellEditor = new SelectCellEditor();
     TableColumn tableColumn = new TableColumn(0);
-
-    tableColumn.setHeaderValue("年月度");
+    TableCellEditor cellEditor = new SelectCellEditor();
+    tableColumn.setHeaderValue("勘定科目");
     tableColumn.setIdentifier(0);
     tableColumn.setCellEditor(cellEditor);
     columnModel.addColumn(tableColumn);
 
     tableColumn = new TableColumn(1);
-    tableColumn.setHeaderValue("金額");
+    tableColumn.setHeaderValue("期初");
     tableColumn.setIdentifier(1);
     tableColumn.setCellEditor(cellEditor);
     columnModel.addColumn(tableColumn);
-    JTable table = new JTable(monthlyModel, columnModel);
+    tableColumn = new TableColumn(1);
+    tableColumn.setHeaderValue("期末");
+    tableColumn.setIdentifier(1);
+    tableColumn.setCellEditor(cellEditor);
+    columnModel.addColumn(tableColumn);
+    JTable table = new JTable(balanceModel, columnModel);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     getContentPane().add(new JScrollPane(table));
   }
