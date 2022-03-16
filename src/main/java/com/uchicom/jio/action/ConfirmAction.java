@@ -1,25 +1,25 @@
 // (C) 2012 uchicom
 package com.uchicom.jio.action;
 
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import com.uchicom.ui.action.AbstractResourceAction;
 import java.awt.event.ActionEvent;
 
-public abstract class ConfirmAction extends AbstractResourceAction<JournalFrame> {
+public abstract class ConfirmAction extends AbstractResourceAction<JournalBook> {
 
   /** */
   private static final long serialVersionUID = 1L;
 
-  protected JournalFrame journalFrame;
+  protected JournalBook journalBook;
 
-  public ConfirmAction(JournalFrame journalFrame) {
-    super(journalFrame);
-    this.journalFrame = journalFrame;
+  public ConfirmAction(JournalBook journalBook) {
+    super(journalBook);
+    this.journalBook = journalBook;
   }
 
   @Override
   public final void actionPerformed(ActionEvent e) {
-    journalFrame.confirm();
+    journalBook.confirm();
     action(e);
   }
 

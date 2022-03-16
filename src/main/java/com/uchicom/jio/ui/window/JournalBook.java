@@ -1,5 +1,5 @@
 // (C) 2012 uchicom
-package com.uchicom.jio.window;
+package com.uchicom.jio.ui.window;
 
 import com.uchicom.csve.util.CSVReader;
 import com.uchicom.jio.action.edit.AddCreditAction;
@@ -33,11 +33,11 @@ import com.uchicom.jio.bean.Account;
 import com.uchicom.jio.bean.Journal;
 import com.uchicom.jio.bean.Transaction;
 import com.uchicom.jio.enums.TransactionType;
-import com.uchicom.jio.table.JournalTableCellRenderer;
-import com.uchicom.jio.table.ListTableModel;
-import com.uchicom.jio.table.LongDocument;
-import com.uchicom.jio.table.TextAreaCellEditor;
-import com.uchicom.jio.table.TransactionTableCellEditor;
+import com.uchicom.jio.ui.table.JournalTableCellRenderer;
+import com.uchicom.jio.ui.table.ListTableModel;
+import com.uchicom.jio.ui.table.LongDocument;
+import com.uchicom.jio.ui.table.TextAreaCellEditor;
+import com.uchicom.jio.ui.table.TransactionTableCellEditor;
 import com.uchicom.jio.util.ZipCSVReader;
 import com.uchicom.ui.util.DialogUtil;
 import com.uchicom.ui.util.UIStore;
@@ -99,9 +99,9 @@ import javax.swing.undo.UndoManager;
  *
  * @author Uchiyama Shigeki
  */
-public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
+public class JournalBook extends JFrame implements UIStore<JournalBook> {
   /** ロガー */
-  private static final Logger logger = Logger.getLogger(JournalFrame.class.getCanonicalName());
+  private static final Logger logger = Logger.getLogger(JournalBook.class.getCanonicalName());
   /** シリアルバージョン(現状使う想定なし) */
   private static final long serialVersionUID = 1L;
 
@@ -174,7 +174,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
   private File selectedFile;
 
   /** コンストラクタ */
-  public JournalFrame() {
+  public JournalBook() {
     super(TITLE_NAME);
     initComponents();
   }
@@ -228,7 +228,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
         prop.load(fis);
         // 画面の初期位置取得
-        setWindowSize(JournalFrame.this, PROP_KEY_JOURNAL_WINDOW);
+        setWindowSize(JournalBook.this, PROP_KEY_JOURNAL_WINDOW);
         setWindowSize(accountListBook, PROP_KEY_ACCOUNT_WINDOW);
         setWindowSize(profitBook, PROP_KEY_PROFIT_WINDOW);
         // 子画面の初期位置取得
@@ -285,7 +285,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
 
             try (FileOutputStream fos = new FileOutputStream(file)) {
               // 画面の位置を保持する
-              setWindowProperty(JournalFrame.this, PROP_KEY_JOURNAL_WINDOW);
+              setWindowProperty(JournalBook.this, PROP_KEY_JOURNAL_WINDOW);
               setWindowProperty(accountListBook, PROP_KEY_ACCOUNT_WINDOW);
               setWindowProperty(bookMap.get(PROP_KEY_CASHBOOK_WINDOW), PROP_KEY_CASHBOOK_WINDOW);
               setWindowProperty(
@@ -333,7 +333,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
             } catch (IOException e) {
               e.printStackTrace();
             }
-            JournalFrame.this.dispose();
+            JournalBook.this.dispose();
           }
 
           @Override
@@ -1203,7 +1203,7 @@ public class JournalFrame extends JFrame implements UIStore<JournalFrame> {
   }
 
   @Override
-  public JournalFrame getMainComponent() {
+  public JournalBook getMainComponent() {
     return this;
   }
 

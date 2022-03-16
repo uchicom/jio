@@ -1,5 +1,5 @@
 // (C) 2012 uchicom
-package com.uchicom.jio.table;
+package com.uchicom.jio.ui.table;
 
 import java.awt.Component;
 import java.util.EventObject;

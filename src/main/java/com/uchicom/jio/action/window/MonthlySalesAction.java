@@ -2,7 +2,7 @@
 package com.uchicom.jio.action.window;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import java.awt.event.ActionEvent;
 
 /**
@@ -14,8 +14,8 @@ public class MonthlySalesAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public MonthlySalesAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public MonthlySalesAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /* (non-Javadoc)
@@ -23,6 +23,6 @@ public class MonthlySalesAction extends ConfirmAction {
    */
   @Override
   public void action(ActionEvent arg0) {
-    journalFrame.showMonthlyBook(JournalFrame.PROP_KEY_MONTHLY_SALES_WINDOW);
+    journalBook.showMonthlyBook(journalBook.PROP_KEY_MONTHLY_SALES_WINDOW);
   }
 }

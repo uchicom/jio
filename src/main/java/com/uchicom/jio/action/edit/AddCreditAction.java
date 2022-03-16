@@ -3,8 +3,8 @@ package com.uchicom.jio.action.edit;
 
 import com.uchicom.jio.action.ConfirmAction;
 import com.uchicom.jio.bean.Journal;
-import com.uchicom.jio.table.ListTableModel;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.table.ListTableModel;
+import com.uchicom.jio.ui.window.JournalBook;
 import com.uchicom.ui.util.DialogUtil;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
@@ -12,8 +12,8 @@ import java.util.Arrays;
 public class AddCreditAction extends ConfirmAction {
   private static final long serialVersionUID = 1L;
 
-  public AddCreditAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public AddCreditAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /* (non-Javadoc)
@@ -21,14 +21,14 @@ public class AddCreditAction extends ConfirmAction {
    */
   @Override
   public void action(ActionEvent arg0) {
-    ListTableModel model = journalFrame.getModel();
-    int[] rowIndexs = journalFrame.getSelectedRows();
+    ListTableModel model = journalBook.getModel();
+    int[] rowIndexs = journalBook.getSelectedRows();
     if (rowIndexs.length > 0) {
       for (int index = 0; index < rowIndexs.length; index++) {
         int rowIndex = rowIndexs[index];
         Journal bean = model.getRowList().get(rowIndex);
         if (bean.getDebitList().size() > 1) {
-          DialogUtil.showMessageDialog(journalFrame, "多対多の複合仕分けは対応していません。");
+          DialogUtil.showMessageDialog(journalBook, "多対多の複合仕分けは対応していません。");
           Arrays.copyOfRange(rowIndexs, rowIndex, rowIndexs.length - 1);
         } else {
           model.addCreditRows(rowIndexs);
@@ -36,7 +36,7 @@ public class AddCreditAction extends ConfirmAction {
       }
     } else {
       // そもそもメニューで選択できないようにしたい。TODO
-      DialogUtil.showMessageDialog(journalFrame, "仕訳を選択してください.");
+      DialogUtil.showMessageDialog(journalBook, "仕訳を選択してください.");
     }
   }
 }

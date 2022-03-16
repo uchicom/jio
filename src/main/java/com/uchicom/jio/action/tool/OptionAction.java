@@ -2,7 +2,7 @@
 package com.uchicom.jio.action.tool;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import java.awt.event.ActionEvent;
 
 /**
@@ -15,8 +15,8 @@ public class OptionAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public OptionAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public OptionAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /*

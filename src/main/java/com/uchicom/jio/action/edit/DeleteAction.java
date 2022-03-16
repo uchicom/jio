@@ -2,8 +2,8 @@
 package com.uchicom.jio.action.edit;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.table.ListTableModel;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.table.ListTableModel;
+import com.uchicom.jio.ui.window.JournalBook;
 import com.uchicom.ui.util.DialogUtil;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
@@ -18,8 +18,8 @@ public class DeleteAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public DeleteAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public DeleteAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /* (non-Javadoc)
@@ -30,11 +30,11 @@ public class DeleteAction extends ConfirmAction {
     if (JOptionPane.OK_OPTION
         == DialogUtil.showConfirmDialog(
             uiStore.getMainComponent(), uiStore.getResourceBundle().getString("message.delete"))) {
-      ListTableModel model = journalFrame.getModel();
-      int[] rowIndexs = journalFrame.getSelectedRows();
+      ListTableModel model = journalBook.getModel();
+      int[] rowIndexs = journalBook.getSelectedRows();
       if (rowIndexs.length != 0) {
         model.removeRows(rowIndexs);
-        journalFrame.clearSelection();
+        journalBook.clearSelection();
       }
     }
   }

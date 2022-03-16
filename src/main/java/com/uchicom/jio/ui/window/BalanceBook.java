@@ -1,9 +1,9 @@
 // (C) 2013 uchicom
-package com.uchicom.jio.window;
+package com.uchicom.jio.ui.window;
 
 import com.uchicom.jio.bean.Journal;
-import com.uchicom.jio.table.BalanceTableModel;
-import com.uchicom.jio.table.SelectCellEditor;
+import com.uchicom.jio.ui.table.BalanceTableModel;
+import com.uchicom.jio.ui.table.SelectCellEditor;
 import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.ImageIcon;

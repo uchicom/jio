@@ -2,7 +2,7 @@
 package com.uchicom.jio.action.file;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.window.JournalBook;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 
@@ -12,8 +12,8 @@ public class CloseAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public CloseAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public CloseAction(JournalBook journalBook) {
+    super(journalBook);
   }
   /* (non-Javadoc)
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -21,6 +21,6 @@ public class CloseAction extends ConfirmAction {
   @Override
   public void action(ActionEvent e) {
     // 画面を閉じる
-    journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
+    journalBook.dispatchEvent(new WindowEvent(journalBook, WindowEvent.WINDOW_CLOSING));
   }
 }

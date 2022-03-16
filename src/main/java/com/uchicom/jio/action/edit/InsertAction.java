@@ -2,8 +2,8 @@
 package com.uchicom.jio.action.edit;
 
 import com.uchicom.jio.action.ConfirmAction;
-import com.uchicom.jio.table.ListTableModel;
-import com.uchicom.jio.window.JournalFrame;
+import com.uchicom.jio.ui.table.ListTableModel;
+import com.uchicom.jio.ui.window.JournalBook;
 import com.uchicom.ui.util.DialogUtil;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
@@ -17,8 +17,8 @@ public class InsertAction extends ConfirmAction {
   /** */
   private static final long serialVersionUID = 1L;
 
-  public InsertAction(JournalFrame journalFrame) {
-    super(journalFrame);
+  public InsertAction(JournalBook journalBook) {
+    super(journalBook);
   }
 
   /* (non-Javadoc)
@@ -29,8 +29,8 @@ public class InsertAction extends ConfirmAction {
     if (JOptionPane.OK_OPTION
         == DialogUtil.showConfirmDialog(
             uiStore.getMainComponent(), uiStore.getResourceBundle().getString("message.add"))) {
-      ListTableModel model = journalFrame.getModel();
-      int[] rowIndexs = journalFrame.getSelectedRows();
+      ListTableModel model = journalBook.getModel();
+      int[] rowIndexs = journalBook.getSelectedRows();
       if (rowIndexs.length == 0) {
         model.addRow();
       } else {
