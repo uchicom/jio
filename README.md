@@ -1,7 +1,6 @@
 # jio
 [![Maven Central](https://img.shields.io/maven-central/v/com.uchicom/jio.svg)](http://search.maven.org/#search|ga|1|com.uchicom.jio)
 [![Maven Central](https://img.shields.io/github/license/uchicom/jio.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
-[![CircleCI](https://circleci.com/gh/uchicom/jio.svg?style=shield)](https://circleci.com/gh/uchicom/jio)
 [![Java CI with Maven](https://github.com/uchicom/jio/actions/workflows/package.yml/badge.svg)](https://github.com/uchicom/jio/actions/workflows/package.yml)
 
 仕訳ソフトウェア
