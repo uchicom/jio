@@ -15,7 +15,6 @@ public class SaveAction extends ConfirmAction {
 
   public SaveAction(JournalBook journalBook) {
     super(journalBook);
-    putValue(NAME, "保存");
     this.journalBook = journalBook;
   }
   /* (non-Javadoc)

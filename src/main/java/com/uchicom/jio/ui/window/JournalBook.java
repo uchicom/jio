@@ -2,37 +2,11 @@
 package com.uchicom.jio.ui.window;
 
 import com.uchicom.csve.util.CSVReader;
-import com.uchicom.jio.action.edit.AddCreditAction;
-import com.uchicom.jio.action.edit.AddDebitAction;
-import com.uchicom.jio.action.edit.CopyAction;
-import com.uchicom.jio.action.edit.DeleteAction;
-import com.uchicom.jio.action.edit.DeleteCreditAction;
-import com.uchicom.jio.action.edit.DeleteDebitAction;
-import com.uchicom.jio.action.edit.InsertAction;
-import com.uchicom.jio.action.edit.PasteAction;
-import com.uchicom.jio.action.file.CloseAction;
-import com.uchicom.jio.action.file.CreateAction;
-import com.uchicom.jio.action.file.ExportAccountAction;
-import com.uchicom.jio.action.file.ImportAccountAction;
-import com.uchicom.jio.action.file.ImportAction;
-import com.uchicom.jio.action.file.OpenAction;
-import com.uchicom.jio.action.file.PrintAction;
-import com.uchicom.jio.action.file.SaveAction;
-import com.uchicom.jio.action.help.HelpAction;
-import com.uchicom.jio.action.help.VersionAction;
-import com.uchicom.jio.action.window.AccountListAction;
-import com.uchicom.jio.action.window.AccountsPayAction;
-import com.uchicom.jio.action.window.AccountsRecAction;
-import com.uchicom.jio.action.window.BalanceAction;
-import com.uchicom.jio.action.window.CashAction;
-import com.uchicom.jio.action.window.CostAction;
-import com.uchicom.jio.action.window.MonthlyPurchaseAction;
-import com.uchicom.jio.action.window.MonthlySalesAction;
-import com.uchicom.jio.action.window.ProfitAction;
 import com.uchicom.jio.bean.Account;
 import com.uchicom.jio.bean.Journal;
 import com.uchicom.jio.bean.Transaction;
 import com.uchicom.jio.enums.TransactionType;
+import com.uchicom.jio.ui.factory.ResourceFactory;
 import com.uchicom.jio.ui.table.JournalTableCellRenderer;
 import com.uchicom.jio.ui.table.ListTableModel;
 import com.uchicom.jio.ui.table.LongDocument;
@@ -51,7 +25,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,9 +50,6 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -173,6 +143,8 @@ public class JournalBook extends JFrame implements UIStore<JournalBook> {
 
   private File selectedFile;
 
+  ResourceFactory resourceFactory = new ResourceFactory();
+
   /** コンストラクタ */
   public JournalBook() {
     super(TITLE_NAME);
@@ -205,10 +177,10 @@ public class JournalBook extends JFrame implements UIStore<JournalBook> {
     initBehaviour();
 
     // メニューバー生成
-    initMenuBar();
+    setJMenuBar(resourceFactory.createMenuBar(this));
 
     // ポップアップメニュー生成
-    initPopupMenu();
+    popup = resourceFactory.createPopupMenu(this);
 
     // 画面作成
     initView();
@@ -394,170 +366,6 @@ public class JournalBook extends JFrame implements UIStore<JournalBook> {
     prop.setProperty(key, value);
   }
 
-  /** メニューバーを初期化する. */
-  private void initMenuBar() {
-    JMenuBar menuBar = new JMenuBar();
-    setJMenuBar(menuBar);
-
-    JMenu menu = new JMenu("ファイル(F)");
-    menu.setMnemonic(KeyEvent.VK_F);
-    menuBar.add(menu);
-
-    JMenuItem menuItem = new JMenuItem(new OpenAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new CreateAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new SaveAction(this));
-    menu.add(menuItem);
-    menu.addSeparator();
-
-    menu.add(new JMenuItem(new ImportAction(this)));
-    menu.add(new JMenuItem(new ImportAccountAction(this)));
-    menu.add(new JMenuItem(new ExportAccountAction(this)));
-    menu.addSeparator();
-
-    menuItem = new JMenuItem(new PrintAction(this));
-    menu.add(menuItem);
-    menu.addSeparator();
-    menuItem = new JMenuItem(new CloseAction(this));
-    menu.add(menuItem);
-
-    menu = new JMenu("編集(E)");
-    menu.setMnemonic(KeyEvent.VK_E);
-    menuBar.add(menu);
-
-    menuItem = new JMenuItem(new InsertAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new DeleteAction(this));
-    menu.add(menuItem);
-    // 区切り線
-    menu.addSeparator();
-    menuItem = new JMenuItem(new AddDebitAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new DeleteDebitAction(this));
-    menu.add(menuItem);
-    menu.addSeparator();
-    menuItem = new JMenuItem(new AddCreditAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new DeleteCreditAction(this));
-    menu.add(menuItem);
-    // 区切り線
-    menu.addSeparator();
-    // コピーペースト機能
-    menuItem = new JMenuItem(new CopyAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new PasteAction(this));
-    menu.add(menuItem);
-
-    menu = new JMenu("ウィンドウ(W)");
-    menu.setMnemonic(KeyEvent.VK_W);
-    menuBar.add(menu);
-
-    menuItem = new JMenuItem(new CashAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new AccountsRecAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new AccountsPayAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new CostAction(this));
-    menu.add(menuItem);
-    menu.addSeparator();
-    menuItem = new JMenuItem(new AccountListAction(this));
-    menu.add(menuItem);
-    menu.addSeparator();
-    menuItem = new JMenuItem(new MonthlySalesAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new MonthlyPurchaseAction(this));
-    menu.add(menuItem);
-    menu.addSeparator();
-    menuItem = new JMenuItem(new BalanceAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new ProfitAction(this));
-    menu.add(menuItem);
-
-    menu = new JMenu("ツール(T)");
-    menu.setMnemonic(KeyEvent.VK_T);
-    menuBar.add(menu);
-
-    menu = new JMenu("ヘルプ(H)");
-    menu.setMnemonic(KeyEvent.VK_H);
-
-    menuItem = new JMenuItem(new HelpAction(this));
-    menu.add(menuItem);
-    menuItem = new JMenuItem(new VersionAction(this));
-    menu.add(menuItem);
-    menuBar.add(menu);
-
-    menuBar.addFocusListener(
-        new FocusListener() {
-
-          @Override
-          public void focusLost(FocusEvent e) {
-            logger.info("JTable.focusLost");
-          }
-
-          @Override
-          public void focusGained(FocusEvent e) {
-            // TODO 自動生成されたメソッド・スタブ
-            logger.info("JMenuBar.focusGained");
-          }
-        });
-
-    this.addFocusListener(
-        new FocusListener() {
-
-          @Override
-          public void focusLost(FocusEvent e) {
-            // TODO 自動生成されたメソッド・スタブ
-
-          }
-
-          @Override
-          public void focusGained(FocusEvent e) {
-            // TODO 自動生成されたメソッド・スタブ
-            logger.info("main.focusGained");
-          }
-        });
-    this.addWindowFocusListener(
-        new WindowFocusListener() {
-
-          @Override
-          public void windowLostFocus(WindowEvent e) {
-            // TODO 自動生成されたメソッド・スタブ
-            logger.info("weLostFocus:" + e);
-          }
-
-          @Override
-          public void windowGainedFocus(WindowEvent e) {
-            // TODO 自動生成されたメソッド・スタブ
-            logger.info("weLostGained:" + e);
-          }
-        });
-  }
-
-  private void initPopupMenu() {
-
-    popup = new JPopupMenu();
-
-    JMenuItem menuItem = new JMenuItem(new InsertAction(this));
-    popup.add(menuItem);
-    menuItem = new JMenuItem(new DeleteAction(this));
-    popup.add(menuItem);
-    // 区切り線
-    popup.addSeparator();
-    menuItem = new JMenuItem(new AddDebitAction(this));
-    popup.add(menuItem);
-    menuItem = new JMenuItem(new AddCreditAction(this));
-    popup.add(menuItem);
-    // 区切り線
-    popup.addSeparator();
-    // コピーペースト機能
-    menuItem = new JMenuItem(new CopyAction(this));
-    popup.add(menuItem);
-    menuItem = new JMenuItem(new PasteAction(this));
-    popup.add(menuItem);
-  }
-
   public TableColumnModel createTableColumnModel() {
     JTextArea textArea = new JTextArea();
     textArea.setLineWrap(true);
@@ -618,13 +426,13 @@ public class JournalBook extends JFrame implements UIStore<JournalBook> {
     JournalTableCellRenderer renderer = new JournalTableCellRenderer();
     TableColumn tableColumn = new TableColumn(0);
 
-    tableColumn.setHeaderValue("取引日");
+    tableColumn.setHeaderValue(resourceBundle.getString("jounarl.table.column.date"));
     tableColumn.setCellRenderer(renderer);
     tableColumn.setIdentifier(0);
     columnModel.addColumn(tableColumn);
 
     tableColumn = new TableColumn(1);
-    tableColumn.setHeaderValue("摘要");
+    tableColumn.setHeaderValue(resourceBundle.getString("jounarl.table.column.content"));
     TextAreaCellEditor textAreaCellEditor = new TextAreaCellEditor(textArea);
     tableColumn.setCellEditor(textAreaCellEditor);
     tableColumn.setCellRenderer(renderer);
@@ -632,19 +440,19 @@ public class JournalBook extends JFrame implements UIStore<JournalBook> {
     columnModel.addColumn(tableColumn);
 
     tableColumn = new TableColumn(2);
-    tableColumn.setHeaderValue("借方(入)");
+    tableColumn.setHeaderValue(resourceBundle.getString("jounarl.table.column.debit"));
     tableColumn.setCellEditor(debitCellEditor);
     tableColumn.setCellRenderer(renderer);
     tableColumn.setIdentifier(2);
     columnModel.addColumn(tableColumn);
     tableColumn = new TableColumn(3);
-    tableColumn.setHeaderValue("貸方(出)");
+    tableColumn.setHeaderValue(resourceBundle.getString("jounarl.table.column.credit"));
     tableColumn.setCellEditor(creditCellEditor);
     tableColumn.setCellRenderer(renderer);
     tableColumn.setIdentifier(3);
     columnModel.addColumn(tableColumn);
     tableColumn = new TableColumn(4);
-    tableColumn.setHeaderValue("金額");
+    tableColumn.setHeaderValue(resourceBundle.getString("jounarl.table.column.amount"));
     columnModel.addColumn(tableColumn);
     tableColumn.setCellEditor(new DefaultCellEditor(textField));
     tableColumn.setIdentifier(4);
@@ -1215,7 +1023,12 @@ public class JournalBook extends JFrame implements UIStore<JournalBook> {
 
   @Override
   public Properties getActionResource() {
-    return actionResource;
+    Properties properties = new Properties();
+    resourceBundle
+        .getKeys()
+        .asIterator()
+        .forEachRemaining(key -> properties.put(key, resourceBundle.getString(key)));
+    return properties;
   }
 
   public void confirm() {

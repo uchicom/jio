@@ -16,7 +16,6 @@ public class AccountAddAction extends AbstractResourceAction<JournalBook> {
 
   public AccountAddAction(JournalBook journalBook, AccountListBook accountListBook) {
     super(journalBook);
-    putValue(NAME, "追加");
     this.accountListBook = accountListBook;
   }
   /* (non-Javadoc)
