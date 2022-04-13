@@ -16,7 +16,6 @@ public class AccountRemoveAction extends AbstractResourceAction<JournalBook> {
 
   public AccountRemoveAction(JournalBook journalBook, AccountListBook accountListBook) {
     super(journalBook);
-    putValue(NAME, "削除");
     this.accountListBook = accountListBook;
   }
   /* (non-Javadoc)

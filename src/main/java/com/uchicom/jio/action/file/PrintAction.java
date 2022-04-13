@@ -5,7 +5,6 @@ import com.uchicom.jio.action.ConfirmAction;
 import com.uchicom.jio.ui.window.JournalBook;
 import com.uchicom.jio.util.JournalPrinter;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.logging.Logger;
@@ -26,9 +25,7 @@ public class PrintAction extends ConfirmAction {
 
   public PrintAction(JournalBook journalBook) {
     super(journalBook);
-    putValue(NAME, "印刷");
     // alt+でメニューを選択状態にするキー、メニューが開いている場合は選択するキーとなる。
-    putValue(MNEMONIC_KEY, KeyEvent.VK_X);
   }
 
   /*
